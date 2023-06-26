@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/autocomplete_fragment"
+        android:layout_margin="10dp"
+        android:elevation="5dp"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        android:background="@drawable/rounded_background"
+        android:padding="8dp"
+        />
+
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="" />
+
+
+    <!--    <SearchView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/search"-->
+<!--        android:queryHint="@string/search_hint"-->
+<!--        android:iconifiedByDefault="false"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:elevation="5dp"-->
+<!--        android:background="@drawable/rounded_border.xml"-->
+<!--        android:inputType="textCapWords" />-->
+
+</RelativeLayout>
