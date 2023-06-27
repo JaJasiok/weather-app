@@ -18,9 +18,14 @@
         android:layout_margin="10dp"
         android:elevation="5dp"
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        android:background="@drawable/rounded_background"
         android:padding="8dp"
         />
+
+<!--    <View-->
+<!--        android:id="@+id/myRectangleView"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:background="@drawable/rounded_background"/>-->
 
     <TextView
         android:id="@+id/text_view"
