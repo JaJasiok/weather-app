@@ -89,7 +89,7 @@ internal class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     marker.title = city ?: "Marker"
                     marker.snippet =
                         null ?: (latLng.latitude.toString() + ", " + latLng.longitude.toString())
-                    marker.tag = latLng
+                    marker.tag = arrayOf(latLng.latitude, latLng.longitude)
                 }
 
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
@@ -100,7 +100,9 @@ internal class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 // Handle info window click event here
                 val intent = Intent(this, DetailActivity::class.java)
                 intent.putExtra(DetailActivity.EXTRA_PLACE_NAME, marker.title)
-                intent.putExtra(DetailActivity.EXTRA_PLACE_LATLNG, marker.snippet)
+                val latLng = marker.tag as Array<Double>
+                intent.putExtra(DetailActivity.EXTRA_PLACE_LAT, latLng[0])
+                intent.putExtra(DetailActivity.EXTRA_PLACE_LNG, latLng[1])
                 startActivity(intent)
             }
         }
