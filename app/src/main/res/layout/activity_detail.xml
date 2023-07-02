@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:theme="@style/Theme.WeatherApp.AppBarOverlay">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@null"
-                app:popupTheme="@style/Theme.WeatherApp.PopupOverlay" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@null"
+            app:popupTheme="@style/Theme.WeatherApp.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -28,18 +28,8 @@
         tools:context=".DetailActivity"
         tools:showIn="@layout/activity_detail">
 
-        <include layout="@layout/content_scrolling"/>
+        <include layout="@layout/content_scrolling" />
 
     </androidx.core.widget.NestedScrollView>
-
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fab"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginEnd="@dimen/fab_margin"-->
-<!--        app:layout_anchor="@id/app_bar"-->
-<!--        app:layout_anchorGravity="bottom|end"-->
-<!--        app:srcCompat="@android:drawable/ic_dialog_email" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

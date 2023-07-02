@@ -2,6 +2,9 @@ package com.example.weatherapp
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun getIconName(id: Int, dt: Long, sunrise: Long?, sunset: Long?, clouds: Int): String {
     val dayTime: String
@@ -120,4 +123,18 @@ fun getDrawableByName(context: Context, drawableName: String): Drawable? {
     } else {
         null
     }
+}
+
+fun formatDate(timestamp: Long): String {
+    val date = Date(timestamp * 1000)
+    val format = SimpleDateFormat("MMMM d, HH:mm", Locale.ENGLISH)
+
+    return format.format(date)
+}
+
+fun formatHour(timestamp: Long): String {
+    val date = Date(timestamp * 1000)
+    val format = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+
+    return format.format(date)
 }

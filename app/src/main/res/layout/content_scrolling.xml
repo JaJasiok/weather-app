@@ -25,14 +25,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
                 android:text="@string/update_time_string"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/update_time_text"
+                android:layout_marginStart="20dp"
+                android:text="@string/day_night_string"
+                android:id="@+id/day_night"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/temp_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/update_time_text"
+                android:layout_below="@id/day_night"
                 android:layout_marginStart="20dp"
                 android:text="@string/temp_string"
                 android:textSize="70sp" />
@@ -273,7 +283,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
-                    android:text="Length of the day: "
+                    android:text="Length of the day "
                     android:textSize="16sp" />
 
                 <TextView
@@ -294,7 +304,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
-                    android:text="Remaining daylight: "
+                    android:id="@+id/remaining_daylight_string"
+                    android:text="Remaining daylight "
                     android:textSize="16sp" />
 
                 <TextView
@@ -421,7 +432,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
-                    android:text="Length of the night: "
+                    android:text="Length of the night "
                     android:textSize="16sp" />
 
                 <TextView

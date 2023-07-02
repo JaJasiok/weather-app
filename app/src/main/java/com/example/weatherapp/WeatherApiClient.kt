@@ -38,7 +38,7 @@ class WeatherApiClient(private val apiKey: String) {
         JSONObject(response.await())
     }
 
-    private fun parseWeatherApiResponse(json: JSONObject): WeatherApiResponse {
+    fun parseWeatherApiResponse(json: JSONObject): WeatherApiResponse {
         return with(json) {
             WeatherApiResponse(
                 lat = getDouble("lat"),

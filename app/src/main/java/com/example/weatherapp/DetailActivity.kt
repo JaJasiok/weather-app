@@ -245,18 +245,4 @@ class DetailActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun formatDate(timestamp: Long): String {
-        val date = Date(timestamp * 1000)
-        val format = SimpleDateFormat("MMMM d, HH:mm", Locale.ENGLISH)
-
-        return format.format(date)
-    }
-
-    private fun formatHour(timestamp: Long): String {
-        val date = Date(timestamp * 1000)
-        val format = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-
-        return format.format(date)
-    }
 }

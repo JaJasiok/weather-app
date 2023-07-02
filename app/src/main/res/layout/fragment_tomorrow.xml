@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/current_layout"
+            android:id="@+id/day_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/light_blue_gradient"
@@ -18,56 +18,38 @@
 
 
             <RelativeLayout
-                android:id="@+id/relative_layout_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="end">
 
                 <TextView
-                    android:id="@+id/update_time_text"
+                    android:id="@+id/date_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="5dp"
-                    android:text="@string/update_time_string"
+                    android:text="@string/date_string"
                     android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/update_time_text"
+                    android:layout_below="@id/date_text"
                     android:layout_marginStart="20dp"
                     android:text="@string/day_night_string"
                     android:id="@+id/day_night"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/temp_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/day_night"
                     android:layout_marginStart="20dp"
-                    android:text="@string/temp_string"
-                    android:textSize="70sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/temp_text"
                     android:layout_marginTop="10dp"
-                    android:layout_toEndOf="@id/temp_text"
-                    android:text="@string/celcius_string"
-                    android:textSize="40sp" />
-
-                <TextView
-                    android:id="@+id/feels_like_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/temp_text"
-                    android:layout_marginStart="20dp"
-                    android:text="@string/feels_like_string"
-                    android:textSize="16sp" />
+                    android:text="Clear sky"
+                    android:id="@+id/weather_text"
+                    android:textSize="24sp" />
 
                 <ImageView
                     android:id="@+id/current_weather_image"
@@ -97,11 +79,11 @@
             android:layout_margin="20dp">
 
             <TextView
-                android:id="@+id/current_details"
+                android:id="@+id/details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
-                android:text="@string/current_details_string"
+                android:text="@string/details_string"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -109,7 +91,7 @@
                 android:id="@+id/current_details_headers"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/current_details"
+                android:layout_below="@id/details"
                 android:orientation="vertical">
 
                 <TextView
@@ -137,11 +119,6 @@
                     android:text="@string/uv_index_string"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:text="@string/visibility_string"
-                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -154,7 +131,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/current_details"
+                android:layout_below="@id/details"
                 android:layout_toEndOf="@id/current_details_headers"
                 android:orientation="vertical">
 
@@ -185,13 +162,6 @@
                     android:layout_height="25dp"
                     android:text="7"
                     android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/visibility_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:text="13 km"
-                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/wind_speed_text"
@@ -296,28 +266,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
                         android:text="16h i 34min"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:id="@+id/remaining_daylight_string"
-                        android:text="Remaining daylight "
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/remaining_daylight_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:text="5h i 14min"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -464,8 +412,7 @@
             android:id="@+id/text_scrolling"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="@string/large_text" />
+            android:layout_margin="@dimen/text_margin"/>
 
     </LinearLayout>
 

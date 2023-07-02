@@ -97,12 +97,17 @@ internal class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             googleMap.setOnInfoWindowClickListener { marker ->
-                // Handle info window click event here
-                val intent = Intent(this, DetailActivity::class.java)
-                intent.putExtra(DetailActivity.EXTRA_PLACE_NAME, marker.title)
+//                val intent = Intent(this, DetailActivity::class.java)
+//                intent.putExtra(DetailActivity.EXTRA_PLACE_NAME, marker.title)
+//                val latLng = marker.tag as Array<Double>
+//                intent.putExtra(DetailActivity.EXTRA_PLACE_LAT, latLng[0])
+//                intent.putExtra(DetailActivity.EXTRA_PLACE_LNG, latLng[1])
+//                startActivity(intent)
+                val intent = Intent(this, DetailActivity2::class.java)
+                intent.putExtra(DetailActivity2.EXTRA_PLACE_NAME, marker.title)
                 val latLng = marker.tag as Array<Double>
-                intent.putExtra(DetailActivity.EXTRA_PLACE_LAT, latLng[0])
-                intent.putExtra(DetailActivity.EXTRA_PLACE_LNG, latLng[1])
+                intent.putExtra(DetailActivity2.EXTRA_PLACE_LAT, latLng[0])
+                intent.putExtra(DetailActivity2.EXTRA_PLACE_LNG, latLng[1])
                 startActivity(intent)
             }
         }

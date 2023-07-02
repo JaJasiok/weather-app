@@ -114,5 +114,8 @@
     <string name="moon_phase_string">Moon phase</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="week">"Week\n "</string>
+    <string name="week">"Week"</string>
+    <string name="day_night_string">Day 21°C · Night 14°C</string>
+    <string name="date_string">Monday, January 1</string>
+    <string name="details_string">Details</string>
 </resources>
