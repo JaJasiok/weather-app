@@ -1,7 +1,5 @@
 package com.example.weatherapp
 
-import HourlyWeather
-import WeatherApiResponse
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -9,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 
@@ -22,7 +18,10 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
                            private var temp: List<Double>?,
                            private var clouds: List<Int>?,
                            private var id: List<Int>?,
-                           private var desc: List<String>?): RecyclerView.Adapter<HourlyWeatherAdapter.ViewHolder>() {
+                           private var desc: List<String>?,
+                           private var rain: List<Double>?,
+                           private var pop: List<Double>?,
+                           ): RecyclerView.Adapter<HourlyWeatherAdapter.ViewHolder>() {
 
     private var listener: Listener? = null
 
@@ -34,7 +33,7 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         this.listener = listener
     }
 
-    fun setData(timezoneOffset: Int, sunrise: Long?, sunset: Long?, dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, d: List<Int>?, desc: List<String>?) {
+    fun setData(timezoneOffset: Int, sunrise: Long?, sunset: Long?, dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, id: List<Int>?, desc: List<String>?, rain: List<Double>?, pop: List<Double>?) {
         this.timezoneOffset = timezoneOffset
         this.sunrise = sunrise
         this.sunset = sunset
@@ -43,6 +42,8 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         this.clouds = clouds
         this.id = id
         this.desc = desc
+        this.rain = rain
+        this.pop = pop
         notifyDataSetChanged()
     }
 
@@ -58,8 +59,10 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cardView = holder.cardView
+        cardView.background = null
 
-        val hour = getHourFromTimestamp((dt?.get(position)?.plus(timezoneOffset) as Long))
+//        val hour = getHourFromTimestamp((dt?.get(position)?.plus(timezoneOffset) as Long))
+        val hour = getHourFromTimestamp(dt!![position])
 
         val hourText = cardView.findViewById<TextView>(R.id.card_hour)
         hourText.text = hour.toString() + ":00"
@@ -69,115 +72,21 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
 
         val imageView = cardView.findViewById<ImageView>(R.id.hourly_image)
 
+        val rainText = cardView.findViewById<TextView>(R.id.card_rain)
+        if(rain!![position] == 0.0){
+            rainText.text = ""
+        }
+        else{
+            rainText.text = (pop!![position] * 100).toInt().toString() + "%"
+
+        }
+
         val sunriseHour = getHourFromTimestamp(sunrise!! + timezoneOffset)
         val sunsetHour = getHourFromTimestamp(sunset!! + timezoneOffset)
 
-        var dayTime: String
-
-        if(dt!![position] > sunset!! && dt!![position] < sunrise!!){
-            dayTime = "night"
-        }
-        else{
-            dayTime = "day"
-        }
-
-        var icon = ""
-
-        if(id?.get(position) in (200..232)){
-            icon = "thunderstorms"
-
-            if(clouds?.get(position)!! < 25){
-                icon += "_$dayTime"
-            }
-
-            if(id?.get(position) !in (210..221)){
-                icon += "rain"
-            }
-        }
-        else if(id?.get(position) in (300..321)){
-            icon = "drizzle"
-
-            if(clouds?.get(position)!! < 25){
-                icon = "partly_cloudy_${dayTime}_drizzle"
-            }
-        }
-        else if(id?.get(position) in (500..531)){
-            icon = "rain"
-
-            if(clouds?.get(position)!! < 25){
-                icon = "partly_cloudy_${dayTime}_rain"
-            }
-        }
-        else if(id?.get(position) in (600..622)){
-            icon = "snow"
-
-            if(clouds?.get(position)!! < 25){
-                icon = "partly_cloudy_${dayTime}_snow"
-            }
-
-            if(id?.get(position) in (611..616)){
-                icon = "sleet"
-
-                if(clouds?.get(position)!! < 25){
-                    icon = "partly_cloudy_${dayTime}_sleet"
-                }
-            }
-        }
-        else if(id?.get(position) == 701){
-            icon = "mist"
-        }
-        else if(id?.get(position) == 711){
-            icon = "smoke"
-
-            if(clouds?.get(position)!! < 25){
-                icon = "partly_cloudy_${dayTime}_smoke"
-            }
-        }
-        else if(id?.get(position) == 721){
-            icon = "haze_${dayTime}"
-
-            if(clouds?.get(position)!! > 25){
-                icon = "partly_cloudy_{$dayTime}_haze"
-            }
-            else if(clouds?.get(position)!! > 50){
-                icon = "haze"
-            }
-        }
-        else if(id?.get(position) == 741){
-            icon = "fog_${dayTime}"
-
-            if(clouds?.get(position)!! > 25){
-                icon = "partly_cloudy_{$dayTime}_fog"
-            }
-            else if(clouds?.get(position)!! > 50){
-                icon = "fog"
-            }
-        }
-        else if(id?.get(position) in (731..762)){
-            icon = "dust_${dayTime}"
-
-            if(clouds?.get(position)!! > 50){
-                icon = "dust"
-            }
-        }
-        else if(id?.get(position) in (771..781)){
-            icon = "tornado"
-        }
-        else if(id?.get(position) == 800){
-            icon = "clear_${dayTime}"
-        }
-        else if(id?.get(position) == 801){
-            icon = "partly_cloudy_${dayTime}"
-        }
-        else if(id?.get(position) in (802..803)){
-            icon = "overcast_${dayTime}"
-        }
-        else if(id?.get(position) == 804){
-            icon = "overcast"
-        }
+        val icon = getIconName(id!![position], dt!![position], sunrise, sunset, clouds!![position])
 
         val drawable = getDrawableByName(cardView.context, icon)
-
 
 //        val drawable = ContextCompat.getDrawable(cardView.context, R.drawable.partly_cloudy_day)
         imageView.setImageDrawable(drawable)
@@ -198,16 +107,4 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
 
         return calendar.get(Calendar.HOUR_OF_DAY)
     }
-
-    private fun getDrawableByName(context: Context, drawableName: String): Drawable? {
-        val resources = context.resources
-        val packageName = context.packageName
-        val resourceId = resources.getIdentifier(drawableName, "drawable", packageName)
-        return if (resourceId != 0) {
-            resources.getDrawable(resourceId, null)
-        } else {
-            null
-        }
-    }
-
 }
