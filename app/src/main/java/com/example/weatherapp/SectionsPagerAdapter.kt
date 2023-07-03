@@ -15,13 +15,14 @@ class SectionsPagerAdapter(
 
 
     override fun getCount(): Int {
-        return 2
+        return 3
     }
 
     override fun getItem(position: Int): Fragment {
         when (position) {
             0 -> return TodayFragment(weatherData)
             1 -> return TomorrowFragment(weatherData)
+            2 -> return WeekFragment(weatherData)
         }
         return TodayFragment(weatherData)
     }
@@ -30,6 +31,7 @@ class SectionsPagerAdapter(
         when (position) {
             0 -> return context.getText(R.string.today)
             1 -> return context.getText(R.string.tomorrow)
+            2 -> return context.getText(R.string.week)
         }
         return null
     }

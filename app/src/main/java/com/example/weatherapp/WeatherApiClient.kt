@@ -9,7 +9,6 @@ import MinutelyWeather
 import Temperature
 import WeatherApiResponse
 import WeatherCondition
-import android.os.AsyncTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext

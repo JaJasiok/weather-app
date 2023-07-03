@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clickable="true"
@@ -24,7 +22,9 @@
             android:id="@+id/card_hour"
             android:text="hour"
             android:textSize="16sp"
-            android:gravity="center" />
+            android:gravity="center"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="normal"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -32,7 +32,9 @@
             android:id="@+id/card_temp"
             android:text="temp"
             android:textSize="16sp"
-            android:gravity="center" />
+            android:gravity="center"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="normal"/>
 
         <ImageView
             android:layout_width="50dp"
@@ -43,10 +45,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/card_rain"
-            android:text="temp"
+            android:id="@+id/card_probability"
+            android:text="prob"
             android:textSize="16sp"
-            android:gravity="center" />
+            android:gravity="center"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="normal"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

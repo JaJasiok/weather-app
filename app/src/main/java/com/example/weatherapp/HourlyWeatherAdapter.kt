@@ -1,8 +1,7 @@
 package com.example.weatherapp
 
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,8 +18,8 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
                            private var clouds: List<Int>?,
                            private var id: List<Int>?,
                            private var desc: List<String>?,
-                           private var rain: List<Double>?,
-                           private var pop: List<Double>?,
+                           private var main: List<String>?,
+                           private var pop: List<Double>?
                            ): RecyclerView.Adapter<HourlyWeatherAdapter.ViewHolder>() {
 
     private var listener: Listener? = null
@@ -33,7 +32,7 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         this.listener = listener
     }
 
-    fun setData(timezoneOffset: Int, sunrise: Long?, sunset: Long?, dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, id: List<Int>?, desc: List<String>?, rain: List<Double>?, pop: List<Double>?) {
+    fun setData(timezoneOffset: Int, sunrise: Long?, sunset: Long?, dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, id: List<Int>?, desc: List<String>?, main: List<String>?, pop: List<Double>?) {
         this.timezoneOffset = timezoneOffset
         this.sunrise = sunrise
         this.sunset = sunset
@@ -42,7 +41,7 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         this.clouds = clouds
         this.id = id
         this.desc = desc
-        this.rain = rain
+        this.main = main
         this.pop = pop
         notifyDataSetChanged()
     }
@@ -72,17 +71,21 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
 
         val imageView = cardView.findViewById<ImageView>(R.id.hourly_image)
 
-        val rainText = cardView.findViewById<TextView>(R.id.card_rain)
-        if(rain!![position] == 0.0){
-            rainText.text = ""
-        }
-        else{
-            rainText.text = (pop!![position] * 100).toInt().toString() + "%"
+        val probabilityText = cardView.findViewById<TextView>(R.id.card_probability)
+        val stringList =
+            listOf("Thunderstorm", "Drizzle", "Rain", "Snow", "Mist", "Fog", "Haze", "Tornado")
 
+        if (main!![position] in stringList) {
+            probabilityText.text = (pop!![position] * 100).toInt().toString() + "%"
+        } else {
+            probabilityText.text = ""
+            probabilityText.visibility = View.GONE
         }
 
-        val sunriseHour = getHourFromTimestamp(sunrise!! + timezoneOffset)
-        val sunsetHour = getHourFromTimestamp(sunset!! + timezoneOffset)
+//        probabilityText.text = (pop!![position] * 100).toInt().toString() + "%"
+
+//        val sunriseHour = getHourFromTimestamp(sunrise!! + timezoneOffset)
+//        val sunsetHour = getHourFromTimestamp(sunset!! + timezoneOffset)
 
         val icon = getIconName(id!![position], dt!![position], sunrise, sunset, clouds!![position])
 

@@ -3,10 +3,6 @@
 
     <style name="Theme.WeatherApp" parent="android:Theme.Material.Light.NoActionBar">
 
-        <item name="android:navigationBarColor">
-            @android:color/white
-        </item>
-
     </style>
 
     <style name="Theme.WeatherApp.NoActionBar">
@@ -18,4 +14,10 @@
 
     <style name="Theme.WeatherApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Theme.WeatherApp.Tabs.TextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
 </resources>
+

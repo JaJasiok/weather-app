@@ -8,7 +8,6 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -103,11 +102,11 @@ internal class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 //                intent.putExtra(DetailActivity.EXTRA_PLACE_LAT, latLng[0])
 //                intent.putExtra(DetailActivity.EXTRA_PLACE_LNG, latLng[1])
 //                startActivity(intent)
-                val intent = Intent(this, DetailActivity2::class.java)
-                intent.putExtra(DetailActivity2.EXTRA_PLACE_NAME, marker.title)
+                val intent = Intent(this, DetailActivity::class.java)
+                intent.putExtra(DetailActivity.EXTRA_PLACE_NAME, marker.title)
                 val latLng = marker.tag as Array<Double>
-                intent.putExtra(DetailActivity2.EXTRA_PLACE_LAT, latLng[0])
-                intent.putExtra(DetailActivity2.EXTRA_PLACE_LNG, latLng[1])
+                intent.putExtra(DetailActivity.EXTRA_PLACE_LAT, latLng[0])
+                intent.putExtra(DetailActivity.EXTRA_PLACE_LNG, latLng[1])
                 startActivity(intent)
             }
         }
