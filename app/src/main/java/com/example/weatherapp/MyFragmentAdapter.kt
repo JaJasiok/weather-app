@@ -1,17 +1,14 @@
 package com.example.weatherapp
 
 import WeatherApiResponse
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
-class SectionsPagerAdapter(
-    private val context: Context,
+class MyFragmentAdapter(
     fm: FragmentManager,
     private val weatherData: WeatherApiResponse
-) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-
+) : FragmentPagerAdapter(fm) {
 
     override fun getCount(): Int {
         return 3
@@ -28,9 +25,9 @@ class SectionsPagerAdapter(
 
     override fun getPageTitle(position: Int): CharSequence? {
         when (position) {
-            0 -> return context.getText(R.string.today)
-            1 -> return context.getText(R.string.tomorrow)
-            2 -> return context.getText(R.string.week)
+            0 -> return "Today"
+            1 -> return "Tomorrow"
+            2 -> return "Week"
         }
         return null
     }

@@ -7,7 +7,6 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
 import androidx.viewpager.widget.ViewPager
 
-
 class NonSwipeableViewPager : ViewPager {
     constructor(context: Context?) : super(context!!) {
         setMyScroller()

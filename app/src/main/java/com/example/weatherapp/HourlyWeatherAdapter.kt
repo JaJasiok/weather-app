@@ -9,7 +9,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 
-
 class HourlyWeatherAdapter(private var timezoneOffset: Int,
                            private var sunrise: Long?,
                            private var sunset: Long?,
