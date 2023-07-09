@@ -47,8 +47,7 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
             gradientName = "${dayTime}_grey_gradient"
         }
 
-        Toast.makeText(requireContext(), gradientName, Toast.LENGTH_LONG).show()
-
+//        Toast.makeText(requireContext(), gradientName, Toast.LENGTH_LONG).show()
 
         val gradient = getDrawableByName(requireContext(), gradientName)
         currentLayout.background = gradient

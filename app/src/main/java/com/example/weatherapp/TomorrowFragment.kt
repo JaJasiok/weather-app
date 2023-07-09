@@ -82,13 +82,14 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = weatherData.current!!.dt * 1000
 
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-
-        val indexShift = 24 - hour
+//        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+//
+//        val indexShift = 24 - hour
+        val indexShift = 23
 
         val timezoneOffset = weatherData.timezoneOffset
-        val sunrise = weatherData.daily[0].sunrise
-        val sunset = weatherData.daily[0].sunset
+        val sunrise = weatherData.daily[1].sunrise
+        val sunset = weatherData.daily[1].sunset
         val dt = weatherData.hourly?.map { it.dt }?.slice(1 + indexShift..24 + indexShift)
         val temp = weatherData.hourly?.map { it.temp }?.slice(1 + indexShift..24 + indexShift)
         val clouds = weatherData.hourly?.map { it.clouds }?.slice(1 + indexShift..24 + indexShift)

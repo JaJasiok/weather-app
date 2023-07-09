@@ -9,7 +9,7 @@ import java.util.Locale
 fun getIconName(id: Int, dt: Long, sunrise: Long?, sunset: Long?, clouds: Int): String {
     val dayTime: String
 
-    if(dt> sunset!! && dt < sunrise!!){
+    if(dt < sunrise!! || dt > sunset!!){
         dayTime = "night"
     }
     else{
