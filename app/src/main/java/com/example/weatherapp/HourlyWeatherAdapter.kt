@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 
 class HourlyWeatherAdapter(private var timezoneOffset: Int,
-                           private var sunrise: Long?,
-                           private var sunset: Long?,
+                           private var sunriseToday: Long?,
+                           private var sunsetToday: Long?,
+                           private var sunriseTomorrow: Long?,
                            private var dt: List<Long>?,
                            private var temp: List<Double>?,
                            private var clouds: List<Int>?,
@@ -31,10 +32,11 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         this.listener = listener
     }
 
-    fun setData(timezoneOffset: Int, sunrise: Long?, sunset: Long?, dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, id: List<Int>?, desc: List<String>?, main: List<String>?, pop: List<Double>?) {
+    fun setData(timezoneOffset: Int, sunriseToday: Long?, sunsetToday: Long?, sunriseTomorrow: Long?,dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, id: List<Int>?, desc: List<String>?, main: List<String>?, pop: List<Double>?) {
         this.timezoneOffset = timezoneOffset
-        this.sunrise = sunrise
-        this.sunset = sunset
+        this.sunriseToday = sunriseToday
+        this.sunsetToday = sunsetToday
+        this.sunriseTomorrow = sunriseTomorrow
         this.dt = dt
         this.temp = temp
         this.clouds = clouds
@@ -81,18 +83,23 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
             probabilityText.visibility = View.GONE
         }
 
+
+
 //        probabilityText.text = (pop!![position] * 100).toInt().toString() + "%"
 
 //        val sunriseHour = getHourFromTimestamp(sunrise!! + timezoneOffset)
 //        val sunsetHour = getHourFromTimestamp(sunset!! + timezoneOffset)
 
-        val icon = getIconName(id!![position], dt!![position], sunrise, sunset, clouds!![position])
+        val icon = getIconNameHour(id!![position], dt!![position], sunriseToday, sunsetToday, sunriseTomorrow, clouds!![position])
 
         val drawable = getDrawableByName(cardView.context, icon)
 
 //        val drawable = ContextCompat.getDrawable(cardView.context, R.drawable.partly_cloudy_day)
         imageView.setImageDrawable(drawable)
         imageView.contentDescription = desc?.get(position) ?: "desc"
+
+//        val imgTxt = cardView.findViewById<TextView>(R.id.img_txt)
+//        imgTxt.text = icon
 
         cardView.setOnClickListener {
             listener?.onClick(position)

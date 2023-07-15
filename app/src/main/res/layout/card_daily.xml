@@ -80,7 +80,8 @@
                 android:layout_height="50dp"
                 android:layout_marginEnd="5dp"
                 android:layout_toLeftOf="@id/temp_layout"
-                android:src="@drawable/partly_cloudy_day" />
+                android:src="@drawable/partly_cloudy_day"
+                android:background="@drawable/circle_background"/>
 
             <TextView
                 android:id="@+id/probability_text"

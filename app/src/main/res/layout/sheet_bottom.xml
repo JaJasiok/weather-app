@@ -42,7 +42,13 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.example.weatherapp.NonSwipeableViewPager
+<!--        <com.example.weatherapp.NonSwipeableViewPager-->
+<!--            android:id="@+id/pager"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>-->
+
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

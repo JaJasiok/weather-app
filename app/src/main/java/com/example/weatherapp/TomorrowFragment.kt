@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
+import java.time.LocalTime
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -66,11 +67,12 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         weatherText.text = weatherData.daily[1].weather.description.capitalize()
 
         val currentWeatherImage = todayView.findViewById<ImageView>(R.id.current_weather_image)
-        var icon = getIconName(
+        var icon = getIconNameHour(
             weatherData.daily[1].weather.id,
             weatherData.daily[1].dt,
             weatherData.daily[1].sunrise,
             weatherData.daily[1].sunset,
+            weatherData.daily[2].sunset,
             weatherData.daily[1].clouds
         )
 
@@ -82,14 +84,26 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = weatherData.current!!.dt * 1000
 
-//        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-//
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        val currentLocalTime = LocalTime.of(hour, 0)
+        val nextSixAM = LocalTime.of(6, 0)
+
+        val indexShift: Int
+
+        if (currentLocalTime.isBefore(nextSixAM)) {
+            indexShift =  nextSixAM.hour - currentLocalTime.hour
+        } else {
+            indexShift = 24 - (currentLocalTime.hour - nextSixAM.hour)
+        }
+
 //        val indexShift = 24 - hour
-        val indexShift = 23
+//        val indexShift = 23
 
         val timezoneOffset = weatherData.timezoneOffset
-        val sunrise = weatherData.daily[1].sunrise
-        val sunset = weatherData.daily[1].sunset
+        val sunriseToday = weatherData.daily[1].sunrise
+        val sunsetToday = weatherData.daily[1].sunset
+        val sunriseTomorrow = weatherData.daily[2].sunrise
         val dt = weatherData.hourly?.map { it.dt }?.slice(1 + indexShift..24 + indexShift)
         val temp = weatherData.hourly?.map { it.temp }?.slice(1 + indexShift..24 + indexShift)
         val clouds = weatherData.hourly?.map { it.clouds }?.slice(1 + indexShift..24 + indexShift)
@@ -104,8 +118,9 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
 
         val adapter = HourlyWeatherAdapter(
             timezoneOffset,
-            sunrise,
-            sunset,
+            sunriseToday,
+            sunsetToday,
+            sunriseTomorrow,
             dt,
             temp,
             clouds,

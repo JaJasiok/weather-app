@@ -10,6 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://raw.github.com/laenger/maven-releases/master/releases" }
     }
 }
 rootProject.name = "WeatherApp"

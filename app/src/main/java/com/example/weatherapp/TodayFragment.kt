@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -69,11 +68,12 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
             "Feels like " + weatherData.current!!.feelsLike.toInt().toString() + "°C"
 
         val currentWeatherImage = todayView.findViewById<ImageView>(R.id.current_weather_image)
-        val icon = getIconName(
+        val icon = getIconNameHour(
             weatherData.current.weather.id,
             weatherData.current.dt,
             weatherData.current.sunrise,
             weatherData.current.sunset,
+            weatherData.daily[1].sunrise,
             weatherData.current.clouds
         )
         val drawable = getDrawableByName(requireContext(), icon)
@@ -83,8 +83,9 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         weatherText.text = weatherData.current.weather.description.capitalize()
 
         val timezoneOffset = weatherData.timezoneOffset
-        val sunrise = weatherData.daily[0].sunrise
-        val sunset = weatherData.daily[0].sunset
+        val sunriseToday = weatherData.daily[0].sunrise
+        val sunsetToday = weatherData.daily[0].sunset
+        val sunriseTomorrow = weatherData.daily[1].sunrise
         val dt = weatherData.hourly?.map { it.dt }?.slice(1..24)
         val temp = weatherData.hourly?.map { it.temp }?.slice(1..24)
         val clouds = weatherData.hourly?.map { it.clouds }?.slice(1..24)
@@ -97,8 +98,9 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
 
         val hourlyAdapter = HourlyWeatherAdapter(
             timezoneOffset,
-            sunrise,
-            sunset,
+            sunriseToday,
+            sunsetToday,
+            sunriseTomorrow,
             dt,
             temp,
             clouds,

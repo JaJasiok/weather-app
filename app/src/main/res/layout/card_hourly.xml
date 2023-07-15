@@ -14,7 +14,8 @@
         android:paddingRight="15dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:background="@android:color/transparent">
+        android:background="@android:color/transparent"
+        android:clipToPadding="false">
 
         <TextView
             android:layout_width="match_parent"
@@ -40,7 +41,9 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:id="@+id/hourly_image"
-            android:src="@drawable/partly_cloudy_day" />
+            android:src="@drawable/partly_cloudy_day"
+            android:background="@drawable/circle_background"
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -51,6 +54,16 @@
             android:gravity="center"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="normal"/>
+
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/img_txt"-->
+<!--            android:text="image.xml"-->
+<!--            android:textSize="10sp"-->
+<!--            android:gravity="center"-->
+<!--            android:textColor="?android:attr/textColorPrimary"-->
+<!--            android:textStyle="normal"/>-->
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

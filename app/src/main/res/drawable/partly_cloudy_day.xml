@@ -12,7 +12,7 @@
       android:strokeColor="#F8AF18"
       android:strokeLineCap="butt">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startX="152.5"
           android:startY="190.35"
           android:endX="192.5"

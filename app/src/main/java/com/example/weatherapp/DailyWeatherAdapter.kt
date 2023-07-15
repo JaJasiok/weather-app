@@ -75,7 +75,7 @@ class DailyWeatherAdapter(private var daily: List<DailyWeather>) :
             probabilityText.text = ""
         }
 
-        var icon = getIconName(
+        var icon = getIconNameDay(
             daily[position].weather.id,
             daily[position].dt,
             daily[position].sunrise,
