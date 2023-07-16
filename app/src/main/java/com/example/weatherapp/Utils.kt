@@ -2,9 +2,11 @@ package com.example.weatherapp
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 
 
 fun getIconNameHour(id: Int, dt: Long, sunriseToday: Long?, sunsetToday: Long?, sunriseTomorrow: Long?, clouds: Int): String {
@@ -26,7 +28,7 @@ fun getIconNameHour(id: Int, dt: Long, sunriseToday: Long?, sunsetToday: Long?, 
             name += "_$dayTime"
         }
 
-        if(id !in (210..221)){
+        if(id in (230..232)){
             name += "rain"
         }
     }
@@ -234,16 +236,28 @@ fun getDrawableByName(context: Context, drawableName: String): Drawable? {
     }
 }
 
-fun formatDate(timestamp: Long): String {
-    val date = Date(timestamp * 1000)
-    val format = SimpleDateFormat("MMMM d, HH:mm", Locale.ENGLISH)
+fun formatDate(timestamp: Long, offsetSeconds: Int): String {
+    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    calendar.timeInMillis = timestamp * 1000
 
-    return format.format(date)
+    calendar.add(Calendar.SECOND, offsetSeconds)
+
+    val localTimeZone = TimeZone.getDefault()
+
+    val format = SimpleDateFormat("MMMM d, HH:mm", Locale.ENGLISH)
+    format.timeZone = localTimeZone
+    return format.format(calendar.time)
 }
 
-fun formatHour(timestamp: Long): String {
-    val date = Date(timestamp * 1000)
-    val format = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+fun formatHour(timestamp: Long, offsetSeconds: Int): String {
+    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    calendar.timeInMillis = timestamp * 1000
 
-    return format.format(date)
+    calendar.add(Calendar.SECOND, offsetSeconds)
+
+    val localTimeZone = TimeZone.getDefault()
+
+    val format = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+    format.timeZone = localTimeZone
+    return format.format(calendar.time)
 }

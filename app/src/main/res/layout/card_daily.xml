@@ -90,7 +90,9 @@
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/weather_image"
                 android:text="80%"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="#00e5ff"
+                android:textStyle="bold"/>
 
 
         </RelativeLayout>

@@ -16,7 +16,7 @@ class WeekFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val weekView = inflater.inflate(R.layout.fragment_week, container, false) as NestedScrollView
 

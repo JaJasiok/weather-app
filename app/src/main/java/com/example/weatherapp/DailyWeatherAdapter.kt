@@ -36,13 +36,13 @@ class DailyWeatherAdapter(private var daily: List<DailyWeather>) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): DailyWeatherAdapter.ViewHolder {
+    ): ViewHolder {
         val cv = LayoutInflater.from(parent.context)
             .inflate(R.layout.card_daily, parent, false) as CardView
-        return DailyWeatherAdapter.ViewHolder(cv)
+        return ViewHolder(cv)
     }
 
-    override fun onBindViewHolder(holder: DailyWeatherAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cardView = holder.cardView
         cardView.background = null
 
@@ -55,7 +55,11 @@ class DailyWeatherAdapter(private var daily: List<DailyWeather>) :
         }
 
         val weatherText = cardView.findViewById<TextView>(R.id.weather_text)
-        weatherText.text = daily[position].weather.description.capitalize()
+        weatherText.text = daily[position].weather.description.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(
+                Locale.getDefault()
+            ) else it.toString()
+        }
 
         val tempDayText = cardView.findViewById<TextView>(R.id.temp_day_text)
         tempDayText.text = daily[position].temp.day.toInt().toString() + "°C"

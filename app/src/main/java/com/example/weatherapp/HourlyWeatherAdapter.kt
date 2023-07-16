@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
+import java.util.TimeZone
 
 class HourlyWeatherAdapter(private var timezoneOffset: Int,
                            private var sunriseToday: Long?,
@@ -62,7 +63,7 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         cardView.background = null
 
 //        val hour = getHourFromTimestamp((dt?.get(position)?.plus(timezoneOffset) as Long))
-        val hour = getHourFromTimestamp(dt!![position])
+        val hour = getHourFromTimestamp(dt!![position], timezoneOffset)
 
         val hourText = cardView.findViewById<TextView>(R.id.card_hour)
         hourText.text = hour.toString() + ":00"
@@ -80,7 +81,7 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
             probabilityText.text = (pop!![position] * 100).toInt().toString() + "%"
         } else {
             probabilityText.text = ""
-            probabilityText.visibility = View.GONE
+//            probabilityText.visibility = View.GONE
         }
 
 
@@ -110,9 +111,14 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         return dt?.size ?: 0
     }
 
-    fun getHourFromTimestamp(timestamp: Long): Int {
+    fun getHourFromTimestamp(timestamp: Long, offsetSeconds: Int): Int {
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = timestamp * 1000 // Convert seconds to milliseconds
+        calendar.timeInMillis = timestamp * 1000
+
+        val timeZone = TimeZone.getTimeZone("UTC")
+        timeZone.rawOffset = offsetSeconds * 1000
+
+        calendar.timeZone = timeZone
 
         return calendar.get(Calendar.HOUR_OF_DAY)
     }

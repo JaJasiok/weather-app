@@ -19,8 +19,8 @@ import java.net.URL
 class WeatherApiClient(private val apiKey: String) {
     suspend fun getWeatherData(latitude: Double, longitude: Double): WeatherApiResponse = withContext(
         Dispatchers.IO) {
-//        val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely&appid=$apiKey"
-        val url = "https://api.openweathermap.org/data/3.0/onecall?lat=52.4&lon=16.9&units=metric&exclude=minutely&appid=$apiKey"
+        val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely&appid=$apiKey"
+//        val url = "https://api.openweathermap.org/data/3.0/onecall?lat=52.4&lon=16.9&units=metric&exclude=minutely&appid=$apiKey"
 
         val json = withContext(Dispatchers.IO) {
             getJsonData(url)

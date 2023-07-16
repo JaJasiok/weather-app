@@ -9,7 +9,7 @@
       android:strokeLineJoin="miter"
       android:strokeWidth="6"
       android:fillType="nonZero"
-      android:strokeColor="#E6EFFC"
+      android:strokeColor="#20f4f7"
       android:strokeLineCap="butt">
     <aapt:attr name="android:fillColor">
       <gradient 
@@ -38,9 +38,9 @@
           android:endX="205.77"
           android:endY="321.09"
           android:type="linear">
-        <item android:offset="0" android:color="#FF0B65ED"/>
-        <item android:offset="0.45" android:color="#FF0A5AD4"/>
-        <item android:offset="1" android:color="#FF0950BC"/>
+        <item android:offset="0" android:color="#FF00E5FF"/>
+        <item android:offset="0.45" android:color="#FF00E5FF"/>
+        <item android:offset="1" android:color="#FF00E5FF"/>
       </gradient>
     </aapt:attr>
   </path>
@@ -58,9 +58,9 @@
           android:endX="262.19"
           android:endY="401.15"
           android:type="linear">
-        <item android:offset="0" android:color="#FF0B65ED"/>
-        <item android:offset="0.45" android:color="#FF0A5AD4"/>
-        <item android:offset="1" android:color="#FF0950BC"/>
+        <item android:offset="0" android:color="#FF00E5FF"/>
+        <item android:offset="0.45" android:color="#FF00E5FF"/>
+        <item android:offset="1" android:color="#FF00E5FF"/>
       </gradient>
     </aapt:attr>
   </path>
@@ -78,9 +78,9 @@
           android:endX="318.19"
           android:endY="350.82"
           android:type="linear">
-        <item android:offset="0" android:color="#FF0B65ED"/>
-        <item android:offset="0.45" android:color="#FF0A5AD4"/>
-        <item android:offset="1" android:color="#FF0950BC"/>
+        <item android:offset="0" android:color="#FF00E5FF"/>
+        <item android:offset="0.45" android:color="#FF00E5FF"/>
+        <item android:offset="1" android:color="#FF00E5FF"/>
       </gradient>
     </aapt:attr>
   </path>
