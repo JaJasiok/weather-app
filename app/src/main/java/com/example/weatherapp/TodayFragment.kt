@@ -166,11 +166,11 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
 
         val dayLengthText = todayView.findViewById<TextView>(R.id.day_length_text)
         dayLengthText.text =
-            "${((weatherData.current.sunset - weatherData.current.sunrise) / 3600).toInt()}h i ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()}min"
+            "${((weatherData.current.sunset - weatherData.current.sunrise) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()}min"
 
         val remainingDaylightText = todayView.findViewById<TextView>(R.id.remaining_daylight_text)
         remainingDaylightText.text =
-            "${((weatherData.current.sunset - weatherData.current.dt) / 3600).toInt()}h i ${(((weatherData.current.sunset - weatherData.current.dt) % 3600) / 60).toInt()}min"
+            "${((weatherData.current.sunset - weatherData.current.dt) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.dt) % 3600) / 60).toInt()}min"
         if ((weatherData.current.sunset - weatherData.current.dt) < 1) {
             val remainingDaylightString =
                 todayView.findViewById<TextView>(R.id.remaining_daylight_string)

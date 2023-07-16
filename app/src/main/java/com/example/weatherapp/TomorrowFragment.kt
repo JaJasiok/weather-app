@@ -14,10 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment() {
 
@@ -93,13 +97,7 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         val currentLocalTime = LocalTime.of(hour, 0)
         val nextSixAM = LocalTime.of(6, 0)
 
-        val indexShift: Int
-
-        if (currentLocalTime.isBefore(nextSixAM)) {
-            indexShift =  nextSixAM.hour - currentLocalTime.hour
-        } else {
-            indexShift = 24 - (currentLocalTime.hour - nextSixAM.hour)
-        }
+        val indexShift = calculateHoursUntilNextSixAM(weatherData.current.dt, weatherData.timezoneOffset)
 
 //        val indexShift = 24 - hour
 //        val indexShift = 23
@@ -172,7 +170,7 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
 
         val dayLengthText = todayView.findViewById<TextView>(R.id.day_length_text)
         dayLengthText.text =
-            "${((weatherData.daily[1].sunset - weatherData.daily[1].sunrise) / 3600).toInt()}h i ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()}min"
+            "${((weatherData.daily[1].sunset - weatherData.daily[1].sunrise) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()}min"
 
         val moonPhaseImage = todayView.findViewById<ImageView>(R.id.moon_phase_image)
         val moonPhase = weatherData.daily[0].moonPhase
@@ -230,4 +228,18 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
 
         return todayView
     }
+
+
+    fun calculateHoursUntilNextSixAM(timestamp: Long, offsetSeconds: Int): Int {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timestamp * 1000
+
+        val timeZone = TimeZone.getTimeZone("UTC")
+        timeZone.rawOffset = offsetSeconds * 1000
+
+        calendar.timeZone = timeZone
+
+        return 30 - calendar.get(Calendar.HOUR_OF_DAY)
+    }
+
 }

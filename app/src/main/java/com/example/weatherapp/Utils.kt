@@ -4,6 +4,10 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
@@ -237,27 +241,22 @@ fun getDrawableByName(context: Context, drawableName: String): Drawable? {
 }
 
 fun formatDate(timestamp: Long, offsetSeconds: Int): String {
-    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-    calendar.timeInMillis = timestamp * 1000
+    val instant = Instant.ofEpochSecond(timestamp)
+    val zoneOffset = ZoneOffset.ofTotalSeconds(offsetSeconds)
 
-    calendar.add(Calendar.SECOND, offsetSeconds)
+    val formatter = DateTimeFormatter.ofPattern("MMMM d, HH:mm", Locale.ENGLISH)
+        .withLocale(Locale.ENGLISH)
+        .withZone(zoneOffset)
 
-    val localTimeZone = TimeZone.getDefault()
-
-    val format = SimpleDateFormat("MMMM d, HH:mm", Locale.ENGLISH)
-    format.timeZone = localTimeZone
-    return format.format(calendar.time)
+    return formatter.format(instant)
 }
 
 fun formatHour(timestamp: Long, offsetSeconds: Int): String {
-    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-    calendar.timeInMillis = timestamp * 1000
+    val instant = Instant.ofEpochSecond(timestamp)
+    val zoneOffset = ZoneOffset.ofTotalSeconds(offsetSeconds)
 
-    calendar.add(Calendar.SECOND, offsetSeconds)
+    val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
+        .withZone(zoneOffset)
 
-    val localTimeZone = TimeZone.getDefault()
-
-    val format = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-    format.timeZone = localTimeZone
-    return format.format(calendar.time)
+    return formatter.format(instant)
 }
