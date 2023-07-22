@@ -158,6 +158,28 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         val windSpeedText = todayView.findViewById<TextView>(R.id.wind_speed_text)
         windSpeedText.text = weatherData.current.humidity.toString() + " m/s"
 
+        val rainRecyclerView = todayView.findViewById<RecyclerView>(R.id.rain_recycler_view)
+        val layoutManager2 =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rainRecyclerView.layoutManager = layoutManager2
+
+        val rain = weatherData.hourly?.map { it.rain ?: 0.0 }?.slice(1..24)
+
+        val rainAdapter = RainAdapter(
+            timezoneOffset,
+            dt,
+            rain,
+            pop
+        )
+        rainRecyclerView.adapter = rainAdapter
+
+        val volumeText = todayView.findViewById<TextView>(R.id.day_volume_text)
+        if ((weatherData.daily[0].rain?.rem(1.0) ?: 0.0) == 0.0) {
+            volumeText.text = String.format("%.0f", weatherData.daily[0].rain).replace(",", ".") + " mm"
+        } else {
+            volumeText.text = String.format("%.1f", weatherData.daily[0].rain).replace(",", ".") + " mm"
+        }
+
         val sunriseText = todayView.findViewById<TextView>(R.id.sunrise_text)
         sunriseText.text = formatHour(weatherData.current.sunrise, weatherData.timezoneOffset)
 
@@ -177,7 +199,6 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
             remainingDaylightString.visibility = View.GONE
             remainingDaylightText.visibility = View.GONE
         }
-
 
         val moonPhaseImage = todayView.findViewById<ImageView>(R.id.moon_phase_image)
         val moonPhase = weatherData.daily[0].moonPhase

@@ -33,7 +33,7 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         this.listener = listener
     }
 
-    fun setData(timezoneOffset: Int, sunriseToday: Long?, sunsetToday: Long?, sunriseTomorrow: Long?,dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, id: List<Int>?, desc: List<String>?, main: List<String>?, pop: List<Double>?) {
+    fun setData(timezoneOffset: Int, sunriseToday: Long?, sunsetToday: Long?, sunriseTomorrow: Long?, dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, id: List<Int>?, desc: List<String>?, main: List<String>?, pop: List<Double>?) {
         this.timezoneOffset = timezoneOffset
         this.sunriseToday = sunriseToday
         this.sunsetToday = sunsetToday

@@ -158,9 +158,30 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         uvIndexText.text =
             uvIndexLevel + ", " + weatherData.daily[1].uvi.toInt().toString()
 
-
         val windSpeedText = todayView.findViewById<TextView>(R.id.wind_speed_text)
         windSpeedText.text = weatherData.daily[1].humidity.toString() + " m/s"
+
+        val rainRecyclerView = todayView.findViewById<RecyclerView>(R.id.rain_recycler_view)
+        val layoutManager2 =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rainRecyclerView.layoutManager = layoutManager2
+
+        val rain = weatherData.hourly?.map { it.rain ?: 0.0 }?.slice(1 + indexShift..24 + indexShift)
+
+        val rainAdapter = RainAdapter(
+            timezoneOffset,
+            dt,
+            rain,
+            pop
+        )
+        rainRecyclerView.adapter = rainAdapter
+
+        val volumeText = todayView.findViewById<TextView>(R.id.day_volume_text)
+        if ((weatherData.daily[1].rain?.rem(1.0) ?: 0.0) == 0.0) {
+            volumeText.text = "0 mm"
+        } else {
+            volumeText.text = String.format("%.1f", weatherData.daily[1].rain).replace(",", ".") + " mm"
+        }
 
         val sunriseText = todayView.findViewById<TextView>(R.id.sunrise_text)
         sunriseText.text = formatHour(weatherData.daily[1].sunrise, weatherData.timezoneOffset)

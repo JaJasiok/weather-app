@@ -411,4 +411,7 @@
     ]
   }
 ]</string>
+    <string name="precipitation_string">Precipitation</string>
+    <string name="chance_string">Chance</string>
+    <string name="volume_string">Volume\n(mm)</string>
 </resources>

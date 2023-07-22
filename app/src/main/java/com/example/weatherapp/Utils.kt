@@ -121,6 +121,7 @@ fun getIconNameHour(id: Int, dt: Long, sunriseToday: Long?, sunsetToday: Long?, 
     return name
 }
 
+
 fun getIconNameDay(id: Int, dt: Long, sunrise: Long?, sunset: Long?, clouds: Int): String {
     val dayTime: String
 
