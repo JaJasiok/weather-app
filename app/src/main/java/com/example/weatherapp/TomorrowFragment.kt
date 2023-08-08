@@ -5,19 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.weatherapp.databinding.FragmentTomorrowBinding
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -25,7 +16,8 @@ import java.util.TimeZone
 
 class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment() {
 
-    private lateinit var hourlyRecyclerView: RecyclerView
+    private var _binding: FragmentTomorrowBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,12 +25,13 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         savedInstanceState: Bundle?
     ): View {
 
-        val todayView =
-            inflater.inflate(R.layout.fragment_tomorrow, container, false) as NestedScrollView
+        _binding = FragmentTomorrowBinding.inflate(inflater, container, false)
+        val tomorrowView = binding.root
 
-        val currentLayout = todayView.findViewById<RelativeLayout>(R.id.day_layout)
+        val dayLayout = binding.dayLayout
 
-        hourlyRecyclerView = currentLayout.findViewById(R.id.hourly_recycler_view)
+        val hourlyRecyclerView = binding.hourlyRecyclerView
+
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         hourlyRecyclerView.layoutManager = layoutManager
@@ -51,30 +44,25 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
             gradientName = "light_grey_gradient"
         }
 
-        Toast.makeText(requireContext(), gradientName, Toast.LENGTH_LONG).show()
-
-
         val gradient = getDrawableByName(requireContext(), gradientName)
-        currentLayout.background = gradient
+        dayLayout.background = gradient
 
-        val dateText = todayView.findViewById<TextView>(R.id.date_text)
-//                updateTimeText.text = formatDate(weatherData.current!!.dt + weatherData.timezoneOffset)
+        val dateText = binding.dateText
         val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.ENGLISH)
         dateText.text = dateFormat.format(Date(weatherData.daily[1].dt * 1000))
-//                updateTimeText.text = formatDate(1688045426)
 
-        val dayNightText = todayView.findViewById<TextView>(R.id.day_night)
+        val dayNightText = binding.dayNightText
         dayNightText.text =
             "Day ${weatherData.daily[1].temp.day.toInt()}°C · Night ${weatherData.daily[1].temp.night.toInt()}°C"
 
-        val weatherText = todayView.findViewById<TextView>(R.id.weather_text)
+        val weatherText = binding.weatherText
         weatherText.text = weatherData.daily[1].weather.description.replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(
                 Locale.getDefault()
             ) else it.toString()
         }
 
-        val currentWeatherImage = todayView.findViewById<ImageView>(R.id.current_weather_image)
+        val currentWeatherImage = binding.currentWeatherImage
         var icon = getIconNameHour(
             weatherData.daily[1].weather.id,
             weatherData.daily[1].dt,
@@ -92,15 +80,7 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = weatherData.current!!.dt * 1000
 
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-
-        val currentLocalTime = LocalTime.of(hour, 0)
-        val nextSixAM = LocalTime.of(6, 0)
-
         val indexShift = calculateHoursUntilNextSixAM(weatherData.current.dt, weatherData.timezoneOffset)
-
-//        val indexShift = 24 - hour
-//        val indexShift = 23
 
         val timezoneOffset = weatherData.timezoneOffset
         val sunriseToday = weatherData.daily[1].sunrise
@@ -115,8 +95,6 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         val main =
             weatherData.hourly?.map { it.weather.main }?.slice(1 + indexShift..24 + indexShift)
         val pop = weatherData.hourly?.map { it.pop }?.slice(1 + indexShift..24 + indexShift)
-
-//                Toast.makeText(requireContext(), dt?.size ?: 0, Toast.LENGTH_LONG).show()
 
         val adapter = HourlyWeatherAdapter(
             timezoneOffset,
@@ -133,16 +111,16 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         )
         hourlyRecyclerView.adapter = adapter
 
-        val humidityText = todayView.findViewById<TextView>(R.id.humidity_text)
+        val humidityText = binding.humidityText
         humidityText.text = weatherData.daily[1].humidity.toString() + "%"
 
-        val dewPointText = todayView.findViewById<TextView>(R.id.dew_point_text)
+        val dewPointText = binding.dewPointText
         dewPointText.text = weatherData.daily[1].dewPoint.toInt().toString() + "°C"
 
-        val pressureText = todayView.findViewById<TextView>(R.id.pressure_text)
+        val pressureText = binding.pressureText
         pressureText.text = weatherData.daily[1].pressure.toString() + " hPa"
 
-        val uvIndexText = todayView.findViewById<TextView>(R.id.uv_index_text)
+        val uvIndexText = binding.uvIndexText
         val uvIndexLevel: String
         if (weatherData.daily[1].uvi.toInt() < 3) {
             uvIndexLevel = "Low"
@@ -158,10 +136,10 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         uvIndexText.text =
             uvIndexLevel + ", " + weatherData.daily[1].uvi.toInt().toString()
 
-        val windSpeedText = todayView.findViewById<TextView>(R.id.wind_speed_text)
+        val windSpeedText = binding.windSpeedText
         windSpeedText.text = weatherData.daily[1].humidity.toString() + " m/s"
 
-        val rainRecyclerView = todayView.findViewById<RecyclerView>(R.id.rain_recycler_view)
+        val rainRecyclerView = binding.rainRecyclerView
         val layoutManager2 =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rainRecyclerView.layoutManager = layoutManager2
@@ -176,24 +154,24 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         )
         rainRecyclerView.adapter = rainAdapter
 
-        val volumeText = todayView.findViewById<TextView>(R.id.day_volume_text)
+        val volumeText = binding.dayVolumeText
         if ((weatherData.daily[1].rain?.rem(1.0) ?: 0.0) == 0.0) {
             volumeText.text = "0 mm"
         } else {
             volumeText.text = String.format("%.1f", weatherData.daily[1].rain).replace(",", ".") + " mm"
         }
 
-        val sunriseText = todayView.findViewById<TextView>(R.id.sunrise_text)
+        val sunriseText = binding.sunriseText
         sunriseText.text = formatHour(weatherData.daily[1].sunrise, weatherData.timezoneOffset)
 
-        val sunsetText = todayView.findViewById<TextView>(R.id.sunset_text)
+        val sunsetText = binding.sunsetText
         sunsetText.text = formatHour(weatherData.daily[1].sunset, weatherData.timezoneOffset)
 
-        val dayLengthText = todayView.findViewById<TextView>(R.id.day_length_text)
+        val dayLengthText = binding.dayLengthText
         dayLengthText.text =
             "${((weatherData.daily[1].sunset - weatherData.daily[1].sunrise) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()}min"
 
-        val moonPhaseImage = todayView.findViewById<ImageView>(R.id.moon_phase_image)
+        val moonPhaseImage = binding.moonPhaseImage
         val moonPhase = weatherData.daily[0].moonPhase
         val moonPhaseIcon: String
         if (moonPhase == 0.0 || moonPhase == 1.0) {
@@ -216,7 +194,7 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         val moonImage = getDrawableByName(requireContext(), moonPhaseIcon)
         moonPhaseImage.setImageDrawable(moonImage)
 
-        val moonPhaseText = todayView.findViewById<TextView>(R.id.moon_phase_text)
+        val moonPhaseText = binding.moonPhaseText
         val moonPhaseName: String
         if (moonPhase == 0.0 || moonPhase == 1.0) {
             moonPhaseName = "New moon"
@@ -237,17 +215,13 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         }
         moonPhaseText.text = moonPhaseName
 
-        val moonriseText = todayView.findViewById<TextView>(R.id.moonrise_text)
+        val moonriseText = binding.moonriseText
         moonriseText.text = formatHour(weatherData.daily[1].moonrise, weatherData.timezoneOffset)
 
-        val moonsetText = todayView.findViewById<TextView>(R.id.moonset_text)
+        val moonsetText = binding.moonsetText
         moonsetText.text = formatHour(weatherData.daily[2].moonset, weatherData.timezoneOffset)
 
-//        val nightLengthText = todayView.findViewById<TextView>(R.id.night_length_text)
-//        nightLengthText.text =
-//            "${((weatherData.daily!![2].moonset - weatherData.daily!![1].moonrise) / 3600).toInt()}h i ${(((weatherData.daily!![2].moonset - weatherData.daily!![1].moonrise) % 3600) / 60).toInt()}min"
-
-        return todayView
+        return tomorrowView
     }
 
 
@@ -263,4 +237,8 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         return 30 - calendar.get(Calendar.HOUR_OF_DAY)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

@@ -5,18 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.weatherapp.databinding.FragmentTodayBinding
 import java.util.Locale
 
 class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
 
+    private var _binding: FragmentTodayBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,52 +21,49 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val todayView =
-            inflater.inflate(R.layout.fragment_today, container, false) as NestedScrollView
+        _binding = FragmentTodayBinding.inflate(inflater, container, false)
 
-        val currentLayout = todayView.findViewById<RelativeLayout>(R.id.current_layout)
+        val todayView = binding.root
 
-        val hourlyRecyclerView = currentLayout.findViewById<RecyclerView>(R.id.hourly_recycler_view)
+        val currentLayout = binding.currentLayout
+
+        val hourlyRecyclerView = binding.hourlyRecyclerView
+
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         hourlyRecyclerView.layoutManager = layoutManager
 
-        val dayTime: String
         val gradientName: String
 
-        if (weatherData.current!!.dt > weatherData.current.sunset && weatherData.current.dt < weatherData.current.sunrise) {
-            dayTime = "dark"
+        val dayTime: String = if (weatherData.current!!.dt > weatherData.current.sunset && weatherData.current.dt < weatherData.current.sunrise) {
+            "dark"
         } else {
-            dayTime = "light"
+            "light"
         }
-        if (weatherData.current.clouds < 25) {
-            gradientName = "${dayTime}_blue_gradient"
+        gradientName = if (weatherData.current.clouds < 25) {
+            "${dayTime}_blue_gradient"
         } else {
-            gradientName = "${dayTime}_grey_gradient"
+            "${dayTime}_grey_gradient"
         }
-
-//        Toast.makeText(requireContext(), gradientName, Toast.LENGTH_LONG).show()
 
         val gradient = getDrawableByName(requireContext(), gradientName)
         currentLayout.background = gradient
 
-        val updateTimeText = todayView.findViewById<TextView>(R.id.update_time_text)
-//                updateTimeText.text = formatDate(weatherData.current!!.dt + weatherData.timezoneOffset)
+        val updateTimeText = binding.updateTimeText
         updateTimeText.text = formatDate(weatherData.current.dt, weatherData.timezoneOffset)
-//                updateTimeText.text = formatDate(1688045426)
 
-        val dayNightText = todayView.findViewById<TextView>(R.id.day_night)
+        val dayNightText = binding.dayNightText
         dayNightText.text =
             "Day ${weatherData.daily!![0].temp.day.toInt()}°C · Night ${weatherData.daily[0].temp.night.toInt()}°C"
 
-        val tempText = todayView.findViewById<TextView>(R.id.temp_text)
+        val tempText = binding.tempText
         tempText.text = weatherData.current.temp.toInt().toString()
 
-        val feelsLikeText = todayView.findViewById<TextView>(R.id.feels_like_text)
+        val feelsLikeText = binding.feelsLikeText
         feelsLikeText.text =
             "Feels like " + weatherData.current.feelsLike.toInt().toString() + "°C"
 
-        val currentWeatherImage = todayView.findViewById<ImageView>(R.id.current_weather_image)
+        val currentWeatherImage = binding.currentWeatherImage
         val icon = getIconNameHour(
             weatherData.current.weather.id,
             weatherData.current.dt,
@@ -81,7 +75,7 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         val drawable = getDrawableByName(requireContext(), icon)
         currentWeatherImage.setImageDrawable(drawable)
 
-        val weatherText = todayView.findViewById<TextView>(R.id.weather_text)
+        val weatherText = binding.weatherText
         weatherText.text = weatherData.current.weather.description.replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(
                 Locale.getDefault()
@@ -100,8 +94,6 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         val main = weatherData.hourly?.map { it.weather.main }?.slice(1..24)
         val pop = weatherData.hourly?.map { it.pop }?.slice(1..24)
 
-        Toast.makeText(requireContext(), timezoneOffset.toString(), Toast.LENGTH_LONG).show()
-
         val hourlyAdapter = HourlyWeatherAdapter(
             timezoneOffset,
             sunriseToday,
@@ -117,16 +109,16 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         )
         hourlyRecyclerView.adapter = hourlyAdapter
 
-        val humidityText = todayView.findViewById<TextView>(R.id.humidity_text)
+        val humidityText = binding.humidityText
         humidityText.text = weatherData.current.humidity.toString() + "%"
 
-        val dewPointText = todayView.findViewById<TextView>(R.id.dew_point_text)
+        val dewPointText = binding.dewPointText
         dewPointText.text = weatherData.current.dewPoint.toInt().toString() + "°C"
 
-        val pressureText = todayView.findViewById<TextView>(R.id.pressure_text)
+        val pressureText = binding.pressureText
         pressureText.text = weatherData.current.pressure.toString() + " hPa"
 
-        val uvIndexText = todayView.findViewById<TextView>(R.id.uv_index_text)
+        val uvIndexText = binding.uvIndexText
         val uvIndexLevel: String
         if (weatherData.current.uvi.toInt() < 3) {
             uvIndexLevel = "Low"
@@ -142,7 +134,7 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         uvIndexText.text =
             uvIndexLevel + ", " + weatherData.current.uvi.toInt().toString()
 
-        val visibilityText = todayView.findViewById<TextView>(R.id.visibility_text)
+        val visibilityText = binding.visibilityText
         if (weatherData.current.visibility < 1000) {
             visibilityText.text = weatherData.current.visibility.toString() + " m"
         } else {
@@ -155,10 +147,10 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
             visibilityText.text = roundedNumber + " km"
         }
 
-        val windSpeedText = todayView.findViewById<TextView>(R.id.wind_speed_text)
+        val windSpeedText = binding.windSpeedText
         windSpeedText.text = weatherData.current.humidity.toString() + " m/s"
 
-        val rainRecyclerView = todayView.findViewById<RecyclerView>(R.id.rain_recycler_view)
+        val rainRecyclerView = binding.rainRecyclerView
         val layoutManager2 =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rainRecyclerView.layoutManager = layoutManager2
@@ -173,34 +165,33 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         )
         rainRecyclerView.adapter = rainAdapter
 
-        val volumeText = todayView.findViewById<TextView>(R.id.day_volume_text)
+        val dayVolumeText = binding.dayVolumeText
         if ((weatherData.daily[0].rain?.rem(1.0) ?: 0.0) == 0.0) {
-            volumeText.text = String.format("%.0f", weatherData.daily[0].rain).replace(",", ".") + " mm"
+            dayVolumeText.text = String.format("%.0f", weatherData.daily[0].rain).replace(",", ".") + " mm"
         } else {
-            volumeText.text = String.format("%.1f", weatherData.daily[0].rain).replace(",", ".") + " mm"
+            dayVolumeText.text = String.format("%.1f", weatherData.daily[0].rain).replace(",", ".") + " mm"
         }
 
-        val sunriseText = todayView.findViewById<TextView>(R.id.sunrise_text)
+        val sunriseText = binding.sunriseText
         sunriseText.text = formatHour(weatherData.current.sunrise, weatherData.timezoneOffset)
 
-        val sunsetText = todayView.findViewById<TextView>(R.id.sunset_text)
+        val sunsetText = binding.sunsetText
         sunsetText.text = formatHour(weatherData.current.sunset, weatherData.timezoneOffset)
 
-        val dayLengthText = todayView.findViewById<TextView>(R.id.day_length_text)
+        val dayLengthText = binding.dayLengthText
         dayLengthText.text =
             "${((weatherData.current.sunset - weatherData.current.sunrise) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()}min"
 
-        val remainingDaylightText = todayView.findViewById<TextView>(R.id.remaining_daylight_text)
+        val remainingDaylightText = binding.remainingDaylightText
         remainingDaylightText.text =
             "${((weatherData.current.sunset - weatherData.current.dt) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.dt) % 3600) / 60).toInt()}min"
         if ((weatherData.current.sunset - weatherData.current.dt) < 1) {
-            val remainingDaylightString =
-                todayView.findViewById<TextView>(R.id.remaining_daylight_string)
+            val remainingDaylightString = binding.remainingDaylightString
             remainingDaylightString.visibility = View.GONE
             remainingDaylightText.visibility = View.GONE
         }
 
-        val moonPhaseImage = todayView.findViewById<ImageView>(R.id.moon_phase_image)
+        val moonPhaseImage = binding.moonPhaseImage
         val moonPhase = weatherData.daily[0].moonPhase
         val moonPhaseIcon: String
         if (moonPhase == 0.0 || moonPhase == 1.0) {
@@ -223,7 +214,7 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         val moonImage = getDrawableByName(requireContext(), moonPhaseIcon)
         moonPhaseImage.setImageDrawable(moonImage)
 
-        val moonPhaseText = todayView.findViewById<TextView>(R.id.moon_phase_text)
+        val moonPhaseText = binding.moonPhaseText
         val moonPhaseName: String
         if (moonPhase == 0.0 || moonPhase == 1.0) {
             moonPhaseName = "New moon"
@@ -244,16 +235,17 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
         }
         moonPhaseText.text = moonPhaseName
 
-        val moonriseText = todayView.findViewById<TextView>(R.id.moonrise_text)
+        val moonriseText = binding.moonriseText
         moonriseText.text = formatHour(weatherData.daily[0].moonrise, weatherData.timezoneOffset)
 
-        val moonsetText = todayView.findViewById<TextView>(R.id.moonset_text)
+        val moonsetText = binding.moonsetText
         moonsetText.text = formatHour(weatherData.daily[1].moonset, weatherData.timezoneOffset)
 
-//        val nightLengthText = todayView.findViewById<TextView>(R.id.night_length_text)
-//        nightLengthText.text =
-//            "${((weatherData.daily!![1].moonset - weatherData.daily!![0].moonrise) / 3600).toInt()}h i ${(((weatherData.daily!![1].moonset - weatherData.daily!![0].moonrise) % 3600) / 60).toInt()}min"
-
         return todayView
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

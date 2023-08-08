@@ -1,7 +1,6 @@
 package com.example.weatherapp
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -62,7 +61,6 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         val cardView = holder.cardView
         cardView.background = null
 
-//        val hour = getHourFromTimestamp((dt?.get(position)?.plus(timezoneOffset) as Long))
         val hour = getHourFromTimestamp(dt!![position], timezoneOffset)
 
         val hourText = cardView.findViewById<TextView>(R.id.card_hour)
@@ -84,23 +82,12 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
 //            probabilityText.visibility = View.GONE
         }
 
-
-
-//        probabilityText.text = (pop!![position] * 100).toInt().toString() + "%"
-
-//        val sunriseHour = getHourFromTimestamp(sunrise!! + timezoneOffset)
-//        val sunsetHour = getHourFromTimestamp(sunset!! + timezoneOffset)
-
         val icon = getIconNameHour(id!![position], dt!![position], sunriseToday, sunsetToday, sunriseTomorrow, clouds!![position])
 
         val drawable = getDrawableByName(cardView.context, icon)
 
-//        val drawable = ContextCompat.getDrawable(cardView.context, R.drawable.partly_cloudy_day)
         imageView.setImageDrawable(drawable)
         imageView.contentDescription = desc?.get(position) ?: "desc"
-
-//        val imgTxt = cardView.findViewById<TextView>(R.id.img_txt)
-//        imgTxt.text = icon
 
         cardView.setOnClickListener {
             listener?.onClick(position)

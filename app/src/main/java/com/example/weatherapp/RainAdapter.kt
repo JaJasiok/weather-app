@@ -1,10 +1,8 @@
 package com.example.weatherapp
 
-import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -69,25 +67,10 @@ class RainAdapter(private var timezoneOffset: Int,
             rainText.setShadowLayer(0.0F, 0.0F, 0.0F, 0)
         }
 
-//        val hour = getHourFromTimestamp((dt?.get(position)?.plus(timezoneOffset) as Long))
         val hour = getHourFromTimestamp(dt!![position], timezoneOffset)
 
         val hourText = cardView.findViewById<TextView>(R.id.card_hour)
         hourText.text = hour.toString() + ":00"
-
-
-//        probabilityText.text = (pop!![position] * 100).toInt().toString() + "%"
-
-//        val sunriseHour = getHourFromTimestamp(sunrise!! + timezoneOffset)
-//        val sunsetHour = getHourFromTimestamp(sunset!! + timezoneOffset)
-
-
-
-//        val drawable = ContextCompat.getDrawable(cardView.context, R.drawable.partly_cloudy_day)
-
-
-//        val imgTxt = cardView.findViewById<TextView>(R.id.img_txt)
-//        imgTxt.text = icon
 
         cardView.setOnClickListener {
             listener?.onClick(position)

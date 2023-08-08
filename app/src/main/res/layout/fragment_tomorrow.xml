@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -28,7 +28,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/day_night"
+                android:id="@+id/day_night_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/date_text"
@@ -42,7 +42,7 @@
                 android:id="@+id/weather_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/day_night"
+                android:layout_below="@id/day_night_text"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:breakStrategy="simple"
@@ -479,27 +479,6 @@
                 android:layout_below="@id/moonrise_layout"
                 android:layout_marginTop="20dp"
                 android:orientation="vertical">
-
-                <!--                <LinearLayout-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:orientation="horizontal">-->
-
-                <!--                    <TextView-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="25dp"-->
-                <!--                        android:text="Moon up time "-->
-                <!--                        android:textSize="16sp" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/night_length_text"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="25dp"-->
-                <!--                        android:text="5h i 52min"-->
-                <!--                        android:textSize="16sp"-->
-                <!--                        android:textStyle="bold" />-->
-
-                <!--                </LinearLayout>-->
 
             </LinearLayout>
 

@@ -2,15 +2,12 @@ package com.example.weatherapp
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-
-import java.text.SimpleDateFormat
+import android.location.Geocoder
+import android.util.Log
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Calendar
 import java.util.Locale
-import java.util.TimeZone
 
 
 fun getIconNameHour(id: Int, dt: Long, sunriseToday: Long?, sunsetToday: Long?, sunriseTomorrow: Long?, clouds: Int): String {
@@ -260,4 +257,20 @@ fun formatHour(timestamp: Long, offsetSeconds: Int): String {
         .withZone(zoneOffset)
 
     return formatter.format(instant)
+}
+
+fun getCityName(geocoder: Geocoder, latitude: Double, longitude: Double): String {
+    try {
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        if (addresses != null) {
+            if (addresses.isNotEmpty()) {
+                val address = addresses[0]
+                val cityName = address.locality ?: address.subAdminArea
+                return cityName
+            }
+        }
+    } catch (e: Exception) {
+        Log.e("Geocoding", "Error: ${e.message}")
+    }
+    return ""
 }
