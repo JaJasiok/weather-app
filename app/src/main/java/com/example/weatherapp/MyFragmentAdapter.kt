@@ -4,6 +4,9 @@ import WeatherApiResponse
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.example.weatherapp.fragments.TodayFragment
+import com.example.weatherapp.fragments.TomorrowFragment
+import com.example.weatherapp.fragments.WeekFragment
 
 class MyFragmentAdapter(
     fm: FragmentManager,

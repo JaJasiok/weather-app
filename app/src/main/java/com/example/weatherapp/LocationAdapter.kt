@@ -8,14 +8,14 @@ import com.example.weatherapp.db.Location
 
 class LocationAdapter(
     private val locations: List<Location>
-): RecyclerView.Adapter<LocationAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<LocationAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: CardLocationBinding) : RecyclerView.ViewHolder(binding.root)
 
     private var listener: Listener? = null
 
     interface Listener {
-        fun onClick(position: Int)
+        fun onClick(position: Int /*, locationName: TextView*/)
     }
 
     fun setListener(listener: Listener?) {
@@ -26,7 +26,8 @@ class LocationAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
-        val binding = CardLocationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            CardLocationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -41,7 +42,7 @@ class LocationAdapter(
         locationName.text = locations[position].locationName
 
         holder.itemView.setOnClickListener {
-            listener?.onClick(position)
+            listener?.onClick(position /*, locationName*/)
         }
     }
 }

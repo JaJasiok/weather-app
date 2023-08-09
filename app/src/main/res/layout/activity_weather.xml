@@ -18,13 +18,14 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/Theme.AppCompat">
+            android:paddingTop="30dp">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@null"
+                android:transitionName="location_name"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/Theme.WeatherApp.PopupOverlay" />
 
@@ -41,17 +42,17 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!--        <com.example.weatherapp.NonSwipeableViewPager-->
-        <!--            android:id="@+id/pager"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>-->
-
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
 
     </LinearLayout>
 

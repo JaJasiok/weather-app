@@ -9,7 +9,7 @@ import com.example.weatherapp.db.Location
 import com.example.weatherapp.db.LocationRepository
 import kotlinx.coroutines.launch
 
-class LocationViewModel(private val repository: LocationRepository): ViewModel() {
+class LocationViewModel(private val repository: LocationRepository) : ViewModel() {
 
     var locations: LiveData<List<Location>> = repository.locations.asLiveData()
 
@@ -27,10 +27,10 @@ class LocationViewModel(private val repository: LocationRepository): ViewModel()
     }
 }
 
-class LocationModelFactory(private val repository: LocationRepository): ViewModelProvider.Factory{
+class LocationModelFactory(private val repository: LocationRepository) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(LocationViewModel::class.java))
+        if (modelClass.isAssignableFrom(LocationViewModel::class.java))
             return LocationViewModel(repository) as T
 
         throw IllegalArgumentException()

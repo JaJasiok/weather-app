@@ -13,31 +13,32 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginBottom="16dp"
             android:background="@android:color/transparent"
             android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/location_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Poznań"
-            android:textSize="16sp"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textStyle="normal" />
+            <TextView
+                android:id="@+id/location_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Poznań"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                android:transitionName="location_name" />
 
         </RelativeLayout>
 
         <ImageView
+            android:id="@+id/breaking_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:id="@+id/breaking_line"
-            android:src="@drawable/breaking_line"
-            android:background="?android:attr/colorPrimary"/>
+            android:background="?android:attr/colorPrimary"
+            android:src="@drawable/breaking_line" />
 
     </LinearLayout>
 

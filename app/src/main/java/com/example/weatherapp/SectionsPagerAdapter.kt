@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.example.weatherapp.fragments.TodayFragment
+import com.example.weatherapp.fragments.TomorrowFragment
+import com.example.weatherapp.fragments.WeekFragment
 
 class SectionsPagerAdapter(
     private val context: Context,

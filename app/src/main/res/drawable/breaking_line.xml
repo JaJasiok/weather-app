@@ -2,7 +2,6 @@
     <solid android:color="?android:attr/textColorSecondary" />
     <corners android:radius="100dp" />
     <stroke
-        android:color="?android:attr/textColorSecondary"
         android:width="1dp"
-        />
+        android:color="?android:attr/textColorSecondary" />
 </shape>

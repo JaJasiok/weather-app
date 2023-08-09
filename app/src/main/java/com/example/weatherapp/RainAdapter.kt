@@ -13,11 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 import java.util.TimeZone
 
-class RainAdapter(private var timezoneOffset: Int,
-                  private var dt: List<Long>?,
-                  private var rain: List<Double>?,
-                  private var pop: List<Double>?
-                           ): RecyclerView.Adapter<RainAdapter.ViewHolder>() {
+class RainAdapter(
+    private var timezoneOffset: Int,
+    private var dt: List<Long>?,
+    private var rain: List<Double>?,
+    private var pop: List<Double>?
+) : RecyclerView.Adapter<RainAdapter.ViewHolder>() {
 
     private var listener: Listener? = null
 
@@ -29,7 +30,7 @@ class RainAdapter(private var timezoneOffset: Int,
         this.listener = listener
     }
 
-    fun setData(timezoneOffset: Int,dt: List<Long>?, rain: List<Double>?, pop: List<Double>?) {
+    fun setData(timezoneOffset: Int, dt: List<Long>?, rain: List<Double>?, pop: List<Double>?) {
         this.timezoneOffset = timezoneOffset
         this.dt = dt
         this.rain = rain
@@ -37,7 +38,7 @@ class RainAdapter(private var timezoneOffset: Int,
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: CardView) : RecyclerView.ViewHolder(itemView){
+    class ViewHolder(itemView: CardView) : RecyclerView.ViewHolder(itemView) {
         var cardView: CardView = itemView
     }
 
@@ -62,7 +63,7 @@ class RainAdapter(private var timezoneOffset: Int,
 
         val rainText = cardView.findViewById<TextView>(R.id.card_rain)
         rainText.text = getRainText(rain!![position])
-        if(rain!![position] < 0.01){
+        if (rain!![position] < 0.01) {
             rainText.setTextColor(cardView.context.getColorResCompat(android.R.attr.textColorSecondary))
             rainText.setShadowLayer(0.0F, 0.0F, 0.0F, 0)
         }
@@ -92,19 +93,15 @@ class RainAdapter(private var timezoneOffset: Int,
     private fun getIconNameRain(rain: Double): String {
         var name: String
 
-        if(rain < 0.01){
+        if (rain < 0.01) {
             name = "empty_drop"
-        }
-        else if(rain < 0.5){
+        } else if (rain < 0.5) {
             name = "low_drop"
-        }
-        else if(rain < 2.5){
+        } else if (rain < 2.5) {
             name = "half_drop"
-        }
-        else if(rain < 10.0){
+        } else if (rain < 10.0) {
             name = "high_drop"
-        }
-        else{
+        } else {
             name = "full_drop"
         }
         return name
@@ -113,16 +110,13 @@ class RainAdapter(private var timezoneOffset: Int,
     private fun getRainText(rain: Double): String {
         var text = "—"
 
-        if(rain == 0.0){
+        if (rain == 0.0) {
             text = "—"
-        }
-        else if(rain < 0.01){
+        } else if (rain < 0.01) {
             text = "<0.01"
-        }
-        else if(rain < 0.05){
+        } else if (rain < 0.05) {
             text = "0.1"
-        }
-        else if(rain >= 0.05) {
+        } else if (rain >= 0.05) {
             text = String.format("%.1f", rain)
         }
 

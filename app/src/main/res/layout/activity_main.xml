@@ -6,59 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-<!--    <fragment-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:id="@+id/map"-->
-<!--        android:name="com.google.android.gms.maps.SupportMapFragment"/>-->
-
-<!--    <fragment-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/autocomplete_fragment"-->
-<!--        android:layout_margin="10dp"-->
-<!--        android:elevation="5dp"-->
-<!--        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"-->
-<!--        android:padding="8dp"-->
-<!--        />-->
-
-<!--    <View-->
-<!--        android:id="@+id/myRectangleView"-->
-<!--        android:layout_width="200dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:background="@drawable/rounded_background"/>-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/text_view"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:text="" />-->
-
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"/>
+        android:layout_above="@id/bottom_navigation" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_navigation_menu"
         app:itemIconTint="@drawable/bottom_navigation_selector"
-        app:itemTextColor="@drawable/bottom_navigation_selector"/>
-
-
-    <!--    <SearchView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/search"-->
-<!--        android:queryHint="@string/search_hint"-->
-<!--        android:iconifiedByDefault="false"-->
-<!--        android:layout_margin="10dp"-->
-<!--        android:elevation="5dp"-->
-<!--        android:background="@drawable/rounded_border.xml"-->
-<!--        android:inputType="textCapWords" />-->
+        app:itemTextColor="@drawable/bottom_navigation_selector"
+        app:menu="@menu/bottom_navigation_menu" />
 
 </RelativeLayout>

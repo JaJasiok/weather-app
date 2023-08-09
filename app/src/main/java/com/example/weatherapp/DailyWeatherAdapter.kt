@@ -70,12 +70,12 @@ class DailyWeatherAdapter(private var daily: List<DailyWeather>) :
         val weatherImage = cardView.findViewById<ImageView>(R.id.weather_image)
 
         val probabilityText = cardView.findViewById<TextView>(R.id.probability_text)
-        val stringList = listOf("Thunderstorm", "Drizzle", "Rain", "Snow", "Mist", "Fog", "Haze", "Tornado")
+        val stringList =
+            listOf("Thunderstorm", "Drizzle", "Rain", "Snow", "Mist", "Fog", "Haze", "Tornado")
 
-        if(daily[position].weather.main in stringList){
+        if (daily[position].weather.main in stringList) {
             probabilityText.text = (daily[position].pop * 100).toInt().toString() + "%"
-        }
-        else{
+        } else {
             probabilityText.text = ""
         }
 

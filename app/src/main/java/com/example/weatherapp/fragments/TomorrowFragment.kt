@@ -1,4 +1,4 @@
-package com.example.weatherapp
+package com.example.weatherapp.fragments
 
 import WeatherApiResponse
 import android.os.Bundle
@@ -7,7 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weatherapp.HourlyWeatherAdapter
+import com.example.weatherapp.RainAdapter
 import com.example.weatherapp.databinding.FragmentTomorrowBinding
+import com.example.weatherapp.formatHour
+import com.example.weatherapp.getDrawableByName
+import com.example.weatherapp.getIconNameHour
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -80,7 +85,8 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = weatherData.current!!.dt * 1000
 
-        val indexShift = calculateHoursUntilNextSixAM(weatherData.current.dt, weatherData.timezoneOffset)
+        val indexShift =
+            calculateHoursUntilNextSixAM(weatherData.current.dt, weatherData.timezoneOffset)
 
         val timezoneOffset = weatherData.timezoneOffset
         val sunriseToday = weatherData.daily[1].sunrise
@@ -144,7 +150,8 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rainRecyclerView.layoutManager = layoutManager2
 
-        val rain = weatherData.hourly?.map { it.rain ?: 0.0 }?.slice(1 + indexShift..24 + indexShift)
+        val rain =
+            weatherData.hourly?.map { it.rain ?: 0.0 }?.slice(1 + indexShift..24 + indexShift)
 
         val rainAdapter = RainAdapter(
             timezoneOffset,
@@ -158,7 +165,8 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
         if ((weatherData.daily[1].rain?.rem(1.0) ?: 0.0) == 0.0) {
             volumeText.text = "0 mm"
         } else {
-            volumeText.text = String.format("%.1f", weatherData.daily[1].rain).replace(",", ".") + " mm"
+            volumeText.text =
+                String.format("%.1f", weatherData.daily[1].rain).replace(",", ".") + " mm"
         }
 
         val sunriseText = binding.sunriseText
@@ -169,7 +177,7 @@ class TomorrowFragment(private val weatherData: WeatherApiResponse) : Fragment()
 
         val dayLengthText = binding.dayLengthText
         dayLengthText.text =
-            "${((weatherData.daily[1].sunset - weatherData.daily[1].sunrise) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()}min"
+            "${((weatherData.daily[1].sunset - weatherData.daily[1].sunrise) / 3600).toInt()} h and ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()} min"
 
         val moonPhaseImage = binding.moonPhaseImage
         val moonPhase = weatherData.daily[0].moonPhase

@@ -9,18 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 import java.util.TimeZone
 
-class HourlyWeatherAdapter(private var timezoneOffset: Int,
-                           private var sunriseToday: Long?,
-                           private var sunsetToday: Long?,
-                           private var sunriseTomorrow: Long?,
-                           private var dt: List<Long>?,
-                           private var temp: List<Double>?,
-                           private var clouds: List<Int>?,
-                           private var id: List<Int>?,
-                           private var desc: List<String>?,
-                           private var main: List<String>?,
-                           private var pop: List<Double>?
-                           ): RecyclerView.Adapter<HourlyWeatherAdapter.ViewHolder>() {
+class HourlyWeatherAdapter(
+    private var timezoneOffset: Int,
+    private var sunriseToday: Long?,
+    private var sunsetToday: Long?,
+    private var sunriseTomorrow: Long?,
+    private var dt: List<Long>?,
+    private var temp: List<Double>?,
+    private var clouds: List<Int>?,
+    private var id: List<Int>?,
+    private var desc: List<String>?,
+    private var main: List<String>?,
+    private var pop: List<Double>?
+) : RecyclerView.Adapter<HourlyWeatherAdapter.ViewHolder>() {
 
     private var listener: Listener? = null
 
@@ -32,7 +33,19 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         this.listener = listener
     }
 
-    fun setData(timezoneOffset: Int, sunriseToday: Long?, sunsetToday: Long?, sunriseTomorrow: Long?, dt: List<Long>?, temp: List<Double>?, clouds: List<Int>?, id: List<Int>?, desc: List<String>?, main: List<String>?, pop: List<Double>?) {
+    fun setData(
+        timezoneOffset: Int,
+        sunriseToday: Long?,
+        sunsetToday: Long?,
+        sunriseTomorrow: Long?,
+        dt: List<Long>?,
+        temp: List<Double>?,
+        clouds: List<Int>?,
+        id: List<Int>?,
+        desc: List<String>?,
+        main: List<String>?,
+        pop: List<Double>?
+    ) {
         this.timezoneOffset = timezoneOffset
         this.sunriseToday = sunriseToday
         this.sunsetToday = sunsetToday
@@ -47,7 +60,7 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: CardView) : RecyclerView.ViewHolder(itemView){
+    class ViewHolder(itemView: CardView) : RecyclerView.ViewHolder(itemView) {
         var cardView: CardView = itemView
     }
 
@@ -82,7 +95,14 @@ class HourlyWeatherAdapter(private var timezoneOffset: Int,
 //            probabilityText.visibility = View.GONE
         }
 
-        val icon = getIconNameHour(id!![position], dt!![position], sunriseToday, sunsetToday, sunriseTomorrow, clouds!![position])
+        val icon = getIconNameHour(
+            id!![position],
+            dt!![position],
+            sunriseToday,
+            sunsetToday,
+            sunriseTomorrow,
+            clouds!![position]
+        )
 
         val drawable = getDrawableByName(cardView.context, icon)
 

@@ -6,16 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [Location::class], version = 1)
-abstract class LocationDatabase : RoomDatabase(){
+abstract class LocationDatabase : RoomDatabase() {
 
-    abstract fun locationDao() : LocationDao
+    abstract fun locationDao(): LocationDao
 
-    companion object{
+    companion object {
         @Volatile
         private var INSTANCE: LocationDatabase? = null
 
-        fun getDatabase(context: Context) : LocationDatabase {
-            return INSTANCE ?: synchronized(this){
+        fun getDatabase(context: Context): LocationDatabase {
+            return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     LocationDatabase::class.java,

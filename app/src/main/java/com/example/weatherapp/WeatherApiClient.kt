@@ -10,27 +10,40 @@ import Temperature
 import WeatherApiResponse
 import WeatherCondition
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
 
 class WeatherApiClient(private val apiKey: String) {
-    suspend fun getWeatherData(latitude: Double, longitude: Double): WeatherApiResponse = withContext(
-        Dispatchers.IO) {
-        val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely&appid=$apiKey"
+    suspend fun getWeatherData(latitude: Double, longitude: Double): WeatherApiResponse? =
+        withContext(
+            Dispatchers.IO
+        ) {
+            val url =
+                "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely&appid=$apiKey"
 
-        val json = withContext(Dispatchers.IO) {
-            getJsonData(url)
+            val json = withContext(Dispatchers.IO) {
+                getJsonData(url)
+            }
+
+            json?.let {
+                parseWeatherApiResponse(it)
+            }
         }
 
-        return@withContext parseWeatherApiResponse(json)
-    }
-
-    private suspend fun getJsonData(url: String): JSONObject = withContext(Dispatchers.IO) {
-        val response = async { URL(url).readText() }
-        JSONObject(response.await())
+    private suspend fun getJsonData(url: String): JSONObject? {
+        return try {
+            withTimeoutOrNull(2000) {
+                val response = async { URL(url).readText() }
+                JSONObject(response.await())
+            }
+        } catch (e: TimeoutCancellationException) {
+            null
+        }
     }
 
     private fun parseWeatherApiResponse(json: JSONObject): WeatherApiResponse {

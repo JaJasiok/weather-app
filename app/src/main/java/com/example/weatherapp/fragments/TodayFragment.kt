@@ -1,4 +1,4 @@
-package com.example.weatherapp
+package com.example.weatherapp.fragments
 
 import WeatherApiResponse
 import android.os.Bundle
@@ -7,7 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weatherapp.HourlyWeatherAdapter
+import com.example.weatherapp.RainAdapter
 import com.example.weatherapp.databinding.FragmentTodayBinding
+import com.example.weatherapp.formatDate
+import com.example.weatherapp.formatHour
+import com.example.weatherapp.getDrawableByName
+import com.example.weatherapp.getIconNameHour
 import java.util.Locale
 
 class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
@@ -35,11 +41,12 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
 
         val gradientName: String
 
-        val dayTime: String = if (weatherData.current!!.dt > weatherData.current.sunset && weatherData.current.dt < weatherData.current.sunrise) {
-            "dark"
-        } else {
-            "light"
-        }
+        val dayTime: String =
+            if (weatherData.current!!.dt > weatherData.current.sunset && weatherData.current.dt < weatherData.current.sunrise) {
+                "dark"
+            } else {
+                "light"
+            }
         gradientName = if (weatherData.current.clouds < 25) {
             "${dayTime}_blue_gradient"
         } else {
@@ -167,9 +174,11 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
 
         val dayVolumeText = binding.dayVolumeText
         if ((weatherData.daily[0].rain?.rem(1.0) ?: 0.0) == 0.0) {
-            dayVolumeText.text = String.format("%.0f", weatherData.daily[0].rain).replace(",", ".") + " mm"
+            dayVolumeText.text =
+                String.format("%.0f", weatherData.daily[0].rain).replace(",", ".") + " mm"
         } else {
-            dayVolumeText.text = String.format("%.1f", weatherData.daily[0].rain).replace(",", ".") + " mm"
+            dayVolumeText.text =
+                String.format("%.1f", weatherData.daily[0].rain).replace(",", ".") + " mm"
         }
 
         val sunriseText = binding.sunriseText
@@ -180,11 +189,11 @@ class TodayFragment(private val weatherData: WeatherApiResponse) : Fragment() {
 
         val dayLengthText = binding.dayLengthText
         dayLengthText.text =
-            "${((weatherData.current.sunset - weatherData.current.sunrise) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()}min"
+            "${((weatherData.current.sunset - weatherData.current.sunrise) / 3600).toInt()} h and ${(((weatherData.current.sunset - weatherData.current.sunrise) % 3600) / 60).toInt()} min"
 
         val remainingDaylightText = binding.remainingDaylightText
         remainingDaylightText.text =
-            "${((weatherData.current.sunset - weatherData.current.dt) / 3600).toInt()}h and ${(((weatherData.current.sunset - weatherData.current.dt) % 3600) / 60).toInt()}min"
+            "${((weatherData.current.sunset - weatherData.current.dt) / 3600).toInt()} h and ${(((weatherData.current.sunset - weatherData.current.dt) % 3600) / 60).toInt()} min"
         if ((weatherData.current.sunset - weatherData.current.dt) < 1) {
             val remainingDaylightString = binding.remainingDaylightString
             remainingDaylightString.visibility = View.GONE

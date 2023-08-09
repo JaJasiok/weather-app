@@ -1,4 +1,4 @@
-package com.example.weatherapp
+package com.example.weatherapp.fragments
 
 import WeatherApiResponse
 import android.Manifest
@@ -20,7 +20,13 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.weatherapp.LocationModelFactory
+import com.example.weatherapp.LocationViewModel
+import com.example.weatherapp.R
+import com.example.weatherapp.WeatherApiClient
+import com.example.weatherapp.WeatherApplication
 import com.example.weatherapp.databinding.FragmentMapBinding
+import com.example.weatherapp.getCityName
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -48,16 +54,23 @@ class MapFragment(
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
 
-    private val locationViewModel: LocationViewModel by activityViewModels{
+    private val locationViewModel: LocationViewModel by activityViewModels {
         LocationModelFactory((requireActivity().application as WeatherApplication).repository)
     }
     private lateinit var googleMap: GoogleMap
     private lateinit var geocoder: Geocoder
     private lateinit var textView: TextView
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
-    private lateinit var weatherData: WeatherApiResponse
+    private var weatherData: WeatherApiResponse? = null
 
     val weatherApiClient = WeatherApiClient("f7e942927369dbd7b31e7a69df30b3fd")
+
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        enterTransition = MaterialFadeThrough()
+//        exitTransition = MaterialFadeThrough()
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,8 +116,10 @@ class MapFragment(
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ), 1
                 )
+            } else {
+                googleMap.isMyLocationEnabled = true
             }
-            googleMap.isMyLocationEnabled = true
+
             googleMap.uiSettings.isMapToolbarEnabled = false
             googleMap.uiSettings.isZoomControlsEnabled = true
             googleMap.uiSettings.isMyLocationButtonEnabled = false
@@ -112,7 +127,7 @@ class MapFragment(
 
             geocoder = Geocoder(requireActivity(), Locale.getDefault())
 
-            googleMap.setOnMapLongClickListener { latLng ->
+            googleMap.setOnMapClickListener { latLng ->
                 googleMap.clear()
 
                 val marker = googleMap.addMarker(
@@ -146,7 +161,8 @@ class MapFragment(
                     marker.title!!,
                     (marker.tag as Array<Double>)[0],
                     (marker.tag as Array<Double>)[1],
-                    weatherData)
+                    weatherData
+                )
                 bottomSheet.show(childFragmentManager, "TAG1")
 
                 true
@@ -155,7 +171,7 @@ class MapFragment(
         }
 
         Places.initialize(requireActivity(), "AIzaSyBqQY0NwTHxhCh_JP9R1O2dPSO61sR-l0A")
-        val placesClient = Places.createClient(requireActivity())
+//        val placesClient = Places.createClient(requireActivity())
 
         autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocomplete_fragment)

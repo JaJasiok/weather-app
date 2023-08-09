@@ -2,64 +2,62 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:clickable="true">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         android:background="@android:color/transparent"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingTop="8dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="8dp">
 
         <TextView
+            android:id="@+id/card_probability"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/card_probability"
-            android:text="80%"
-            android:textSize="16sp"
             android:gravity="center"
+            android:text="80%"
             android:textColor="?android:attr/textColorPrimary"
-            android:textStyle="normal"/>
+            android:textSize="16sp"
+            android:textStyle="normal" />
 
         <ImageView
-            android:layout_margin="5dp"
+            android:id="@+id/rain_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:id="@+id/rain_image"
-            android:src="@drawable/half_drop"
-            />
+            android:layout_margin="5dp"
+            android:src="@drawable/half_drop" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/card_rain"
-            android:text="0.5"
-            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
+            android:shadowColor="@color/grey"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="20"
+            android:text="0.5"
             android:textColor="#00e5ff"
-            android:textStyle="bold"
-            android:shadowColor = "@color/grey"
-            android:shadowDx = "0"
-            android:shadowDy = "0"
-            android:shadowRadius = "20"
-             />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
 
         <TextView
+            android:id="@+id/card_hour"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/card_hour"
-            android:text="12:00"
             android:layout_marginTop="8dp"
-            android:textSize="16sp"
             android:gravity="center"
-            android:textStyle="normal"/>
+            android:text="12:00"
+            android:textSize="16sp"
+            android:textStyle="normal" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

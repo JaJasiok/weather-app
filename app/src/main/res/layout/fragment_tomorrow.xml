@@ -6,13 +6,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="?android:attr/colorPrimary">
+        android:background="?android:attr/colorPrimary"
+        android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/day_layout"
             android:layout_width="match_parent"
             android:layout_height="500dp"
-            android:id="@+id/day_layout"
             android:layout_gravity="end"
             android:background="@drawable/light_blue_gradient">
 
@@ -23,8 +23,8 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="5dp"
-                android:textColor="?android:attr/textColorSecondaryInverse"
                 android:text="@string/date_string"
+                android:textColor="?android:attr/textColorSecondaryInverse"
                 android:textSize="18sp" />
 
             <TextView
@@ -34,9 +34,9 @@
                 android:layout_below="@id/date_text"
                 android:layout_marginStart="20dp"
                 android:text="@string/day_night_string"
-                android:textSize="16sp"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="normal"/>
+                android:textSize="16sp"
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/weather_text"
@@ -48,20 +48,20 @@
                 android:breakStrategy="simple"
                 android:maxWidth="200dp"
                 android:text="Clear sky"
-                android:textSize="24sp"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="normal"/>
+                android:textSize="24sp"
+                android:textStyle="normal" />
 
             <ImageView
                 android:id="@+id/current_weather_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/circle_background"
                 android:contentDescription="@string/current_weather_image_string"
-                android:src="@drawable/clear_day"
-                android:background="@drawable/circle_background"/>
+                android:src="@drawable/clear_day" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hourly_recycler_view"
@@ -86,8 +86,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:text="@string/details_string"
-                android:textSize="16sp"
                 android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
                 android:textStyle="normal" />
 
             <LinearLayout
@@ -143,8 +143,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:text="51%"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
                 <TextView
@@ -152,8 +152,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:text="11°C"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
                 <TextView
@@ -161,8 +161,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:text="1014 hPa"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
                 <TextView
@@ -170,8 +170,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:text="7"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
                 <TextView
@@ -179,8 +179,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:text="2.5 m/s"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -280,8 +280,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:text="@string/sunrise_sunset_string"
-                android:textSize="16sp"
                 android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
                 android:textStyle="normal" />
 
             <LinearLayout
@@ -305,8 +305,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="7:21"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -332,8 +332,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="20:21"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -361,9 +361,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
                         android:text="16h i 34min"
-                        android:textSize="16sp"
                         android:textColor="?android:attr/textColorPrimary"
-                        android:textStyle="normal"  />
+                        android:textSize="16sp"
+                        android:textStyle="normal" />
 
                 </LinearLayout>
 
@@ -387,8 +387,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:text="@string/moon_phase_string"
-                android:textSize="16sp"
                 android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
                 android:textStyle="normal" />
 
             <LinearLayout
@@ -413,8 +413,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Waning crescent"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -440,8 +440,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="21:21"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -467,8 +467,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="3:13"
-                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp"
                     android:textStyle="normal" />
 
             </LinearLayout>

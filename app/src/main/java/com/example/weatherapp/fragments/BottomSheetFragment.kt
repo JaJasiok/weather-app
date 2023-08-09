@@ -1,4 +1,4 @@
-package com.example.weatherapp
+package com.example.weatherapp.fragments
 
 import WeatherApiResponse
 import android.os.Bundle
@@ -9,6 +9,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager.widget.ViewPager
 import biz.laenger.android.vpbs.ViewPagerBottomSheetDialogFragment
+import com.example.weatherapp.LocationModelFactory
+import com.example.weatherapp.LocationViewModel
+import com.example.weatherapp.MyFragmentAdapter
+import com.example.weatherapp.R
+import com.example.weatherapp.WeatherApplication
 import com.example.weatherapp.databinding.SheetBottomBinding
 import com.example.weatherapp.db.Location
 import com.google.android.material.tabs.TabLayout
@@ -17,7 +22,7 @@ class BottomSheet(
     private val locationName: String,
     private val latitude: Double,
     private val longitude: Double,
-    private val weatherData: WeatherApiResponse,
+    private val weatherData: WeatherApiResponse?,
 ) : ViewPagerBottomSheetDialogFragment() {
 
     private var _binding: SheetBottomBinding? = null
@@ -41,12 +46,11 @@ class BottomSheet(
 
         toolbar.inflateMenu(R.menu.like_menu)
 
-        locationViewModel.locations.observe(viewLifecycleOwner) {locations ->
-            if((locations.find { it.locationName == locationName }) != null ){
+        locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
+            if ((locations.find { it.locationName == locationName }) != null) {
                 toolbar.menu.findItem(R.id.action_add_favorite).isVisible = false
                 toolbar.menu.findItem(R.id.action_delete_favorite).isVisible = true
-            }
-            else{
+            } else {
                 toolbar.menu.findItem(R.id.action_add_favorite).isVisible = true
                 toolbar.menu.findItem(R.id.action_delete_favorite).isVisible = false
             }
@@ -65,15 +69,23 @@ class BottomSheet(
                     )
                     true
                 }
+
                 R.id.action_delete_favorite -> {
                     locationViewModel.deleteLocationByName(locationName)
                     true
                 }
+
                 else -> false
             }
         }
 
+        if (weatherData == null) {
+            val errorText = binding.errorText
+            errorText.text = "Unable to fetch data from the API. Try again!"
+            return view
+        }
         viewPager = view.findViewById(R.id.pager)
+
         val adapter = MyFragmentAdapter(childFragmentManager, weatherData)
         viewPager.adapter = adapter
 

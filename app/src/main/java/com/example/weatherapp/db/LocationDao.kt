@@ -9,7 +9,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface LocationDao{
+interface LocationDao {
 
     @Query("SELECT * from location WHERE id = :id")
     fun getItem(id: Int): Location

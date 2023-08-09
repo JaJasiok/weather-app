@@ -1,4 +1,4 @@
-package com.example.weatherapp
+package com.example.weatherapp.fragments
 
 import WeatherApiResponse
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weatherapp.DailyWeatherAdapter
 import com.example.weatherapp.databinding.FragmentWeekBinding
 
 class WeekFragment(private val weatherData: WeatherApiResponse) : Fragment() {

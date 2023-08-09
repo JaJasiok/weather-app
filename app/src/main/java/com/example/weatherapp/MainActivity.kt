@@ -5,9 +5,12 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import com.example.weatherapp.databinding.ActivityMainBinding
+import com.example.weatherapp.fragments.FavoritesFragment
+import com.example.weatherapp.fragments.MapFragment
+import com.example.weatherapp.fragments.WeatherFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
@@ -25,12 +28,13 @@ internal class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
-        checkLocationPermissions()
         getCurrentLocation()
 
         favoritesFragment = FavoritesFragment()
@@ -50,14 +54,17 @@ internal class MainActivity : AppCompatActivity() {
                     showWeatherFragment()
                     true
                 }
+
                 R.id.page_2 -> {
                     showMapFragment()
                     true
                 }
+
                 R.id.page_3 -> {
                     showFavoritesFragment()
                     true
                 }
+
                 else -> false
             }
         }
@@ -111,24 +118,6 @@ internal class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLocationPermissions() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        }
-    }
-
-
     private fun getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -138,15 +127,11 @@ internal class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
+            weatherFragment = WeatherFragment(null)
+//            showWeatherFragment()
+//            showMapFragment()
         }
+
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 currentLatLng = LatLng(location.latitude, location.longitude)
@@ -155,25 +140,5 @@ internal class MainActivity : AppCompatActivity() {
                 showMapFragment()
             }
         }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, now you can proceed to get the location
-                getCurrentLocation()
-            } else {
-                // Permission denied. Handle this situation accordingly.
-            }
-        }
-    }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
     }
 }
