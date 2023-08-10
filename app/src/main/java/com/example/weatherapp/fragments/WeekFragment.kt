@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.DailyWeatherAdapter
+import com.example.weatherapp.MyFragmentAdapter
 import com.example.weatherapp.databinding.FragmentWeekBinding
 
-class WeekFragment(private val weatherData: WeatherApiResponse) : Fragment() {
+class WeekFragment(private var weatherData: WeatherApiResponse) : Fragment(), MyFragmentAdapter.WeatherDataListener  {
 
     private var _binding: FragmentWeekBinding? = null
     private val binding get() = _binding!!
@@ -22,18 +23,27 @@ class WeekFragment(private val weatherData: WeatherApiResponse) : Fragment() {
     ): View {
         _binding = FragmentWeekBinding.inflate(inflater, container, false)
 
-        val weekView = binding.root
+        updateFragment()
 
-        val dailyRecyclerView = binding.dailyRecyclerView
-        val layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        dailyRecyclerView.layoutManager = layoutManager
+        return binding.root
+    }
 
-        val dailyAdapter = DailyWeatherAdapter(weatherData.daily!!)
+    private fun updateFragment() {
+        _binding?.let { binding ->
 
-        dailyRecyclerView.adapter = dailyAdapter
+            val dailyRecyclerView = binding.dailyRecyclerView
+            val layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            dailyRecyclerView.layoutManager = layoutManager
 
-        return weekView
+            val dailyAdapter = DailyWeatherAdapter(weatherData.daily!!)
+
+            dailyRecyclerView.adapter = dailyAdapter
+        }
+    }
+    override fun onWeatherDataUpdated(newWeatherData: WeatherApiResponse) {
+        this.weatherData = newWeatherData
+        updateFragment()
     }
 
     override fun onDestroyView() {

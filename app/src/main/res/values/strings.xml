@@ -329,4 +329,6 @@
     <string name="map">Map</string>
     <string name="favorites">Favorites</string>
     <string name="action_favorite">Add to favorites</string>
+    <string name="refresh">Refresh</string>
+    <string name="favorite_locations">No favorite locations found.</string>
 </resources>

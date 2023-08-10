@@ -5,6 +5,8 @@
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="@string/view_pager_bottom_sheet_behavior"
+    app:behavior_peekHeight="380dp"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -13,6 +15,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:backgroundTint="?android:attr/colorPrimary">
+<!--        app:layout_behavior="@string/view_pager_bottom_sheet_behavior"-->
+<!--        app:behavior_peekHeight="380dp"-->
+<!--        >-->
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
@@ -47,12 +52,18 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <TextView
             android:id="@+id/error_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center" />
+            android:layout_centerInParent="true" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

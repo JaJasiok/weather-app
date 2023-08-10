@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +32,7 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
 
     private lateinit var geocoder: Geocoder
     private lateinit var viewPager: ViewPager
+    private var adapter: MyFragmentAdapter? = null
     private var weatherData: WeatherApiResponse? = null
     private val locationViewModel: LocationViewModel by activityViewModels {
         LocationModelFactory((requireActivity().application as WeatherApplication).repository)
@@ -53,12 +55,15 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
 
         val weatherView = binding.root
 
+        viewPager = binding.pager
+
         val toolbar = binding.toolbar
+
+        val errorText = binding.errorText
 
         if (latLng == null) {
             toolbar.title = "Unknown"
             binding.pager.visibility = GONE
-            val errorText = binding.errorText
             errorText.text = "Unable to fetch current location. Please check permissions!"
 
             return weatherView
@@ -72,7 +77,7 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
         val locationName = getCityName(geocoder, latitude, longitude)
 
         toolbar.title = locationName
-        toolbar.inflateMenu(R.menu.like_menu)
+        toolbar.inflateMenu(R.menu.weather_menu)
 
         locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
             if ((locations.find { it.locationName == locationName }) != null) {
@@ -103,14 +108,38 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
                     true
                 }
 
+                R.id.action_refresh -> {
+                    lifecycleScope.launch {
+                        val newWeatherData = weatherApiClient.getWeatherData(latitude, longitude)
+                        if (newWeatherData == null) {
+                            Toast.makeText(
+                                requireContext(),
+                                "Unable to refresh data. Try again!",
+                                Toast.LENGTH_LONG
+                            ).show()
+//                        }else if (weatherData == newWeatherData) {
+//                            weatherData!!.current!!.dt = System.currentTimeMillis()
+//                            adapter.setWeatherData(weatherData!!)
+                        } else {
+                            weatherData = newWeatherData
+                            if (adapter == null){
+                                adapter = MyFragmentAdapter(childFragmentManager, weatherData!!)
+                                viewPager.adapter = adapter
+                            } else{
+                                adapter!!.setWeatherData(weatherData!!)
+                            }
+                            errorText.text = ""
+                        }
+                    }
+                    true
+                }
+
                 else -> false
             }
         }
 
         lifecycleScope.launch {
-            weatherData = weatherApiClient.getWeatherData(latLng.latitude, latLng.longitude)
-
-            viewPager = binding.pager
+            weatherData = weatherApiClient.getWeatherData(latitude, longitude)
 
             if (weatherData == null) {
                 val errorText = binding.errorText
@@ -118,7 +147,7 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
                 return@launch
             }
 
-            val adapter = MyFragmentAdapter(childFragmentManager, weatherData!!)
+            adapter = MyFragmentAdapter(childFragmentManager, weatherData!!)
             viewPager.adapter = adapter
 
             val tabLayout = binding.tabs

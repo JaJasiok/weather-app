@@ -11,7 +11,7 @@ data class WeatherApiResponse(
 )
 
 data class CurrentWeather(
-    val dt: Long,
+    var dt: Long,
     val sunrise: Long,
     val sunset: Long,
     val temp: Double,

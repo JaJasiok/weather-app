@@ -15,7 +15,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -59,7 +58,6 @@ class MapFragment(
     }
     private lateinit var googleMap: GoogleMap
     private lateinit var geocoder: Geocoder
-    private lateinit var textView: TextView
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
     private var weatherData: WeatherApiResponse? = null
 
@@ -164,7 +162,6 @@ class MapFragment(
                     weatherData
                 )
                 bottomSheet.show(childFragmentManager, "TAG1")
-
                 true
             }
 
@@ -209,8 +206,6 @@ class MapFragment(
 
         autocompleteFragment.setTypesFilter(listOf(PlaceTypes.CITIES))
 
-        textView = binding.textView
-
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 Log.i(ContentValues.TAG, "Place: ${place.name}, ${place.id}")
@@ -247,7 +242,6 @@ class MapFragment(
 
             override fun onError(status: Status) {
                 Log.i(ContentValues.TAG, "An error occurred: $status")
-                textView.text = "An error occurred: $status"
             }
         })
         return mapView

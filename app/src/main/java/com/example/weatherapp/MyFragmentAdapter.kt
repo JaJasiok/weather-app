@@ -10,20 +10,23 @@ import com.example.weatherapp.fragments.WeekFragment
 
 class MyFragmentAdapter(
     fm: FragmentManager,
-    private val weatherData: WeatherApiResponse
+    private var weatherData: WeatherApiResponse
 ) : FragmentPagerAdapter(fm) {
 
+    private val fragments = arrayListOf<Fragment>()
+
+    init {
+        fragments.add(TodayFragment(weatherData))
+        fragments.add(TomorrowFragment(weatherData))
+        fragments.add(WeekFragment(weatherData))
+    }
+
     override fun getCount(): Int {
-        return 3
+        return fragments.size
     }
 
     override fun getItem(position: Int): Fragment {
-        when (position) {
-            0 -> return TodayFragment(weatherData)
-            1 -> return TomorrowFragment(weatherData)
-            2 -> return WeekFragment(weatherData)
-        }
-        return TodayFragment(weatherData)
+        return fragments[position]
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
@@ -33,5 +36,19 @@ class MyFragmentAdapter(
             2 -> return "Week"
         }
         return null
+    }
+
+    fun setWeatherData(newWeatherData: WeatherApiResponse) {
+        this.weatherData = newWeatherData
+        for (fragment in fragments) {
+            if (fragment is WeatherDataListener) {
+                fragment.onWeatherDataUpdated(weatherData)
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    interface WeatherDataListener {
+        fun onWeatherDataUpdated(weatherData: WeatherApiResponse)
     }
 }

@@ -78,42 +78,42 @@ internal class MainActivity : AppCompatActivity() {
 
     private fun showWeatherFragment() {
         supportFragmentManager.beginTransaction().apply {
+            hide(mapFragment)
+            hide(favoritesFragment)
             weatherFragment.let {
                 if (!it.isAdded) {
                     add(R.id.fragment_container, it)
                 }
-                show(it) // Show the MapFragment
+                show(it)
             }
-            hide(mapFragment)
-            hide(favoritesFragment)
             commit()
         }
     }
 
     private fun showMapFragment() {
         supportFragmentManager.beginTransaction().apply {
+            hide(weatherFragment)
+            hide(favoritesFragment)
             mapFragment.let {
                 if (!it.isAdded) {
                     add(R.id.fragment_container, it)
                 }
-                show(it) // Show the MapFragment
+                show(it)
             }
-            hide(weatherFragment)
-            hide(favoritesFragment)
             commit()
         }
     }
 
     private fun showFavoritesFragment() {
         supportFragmentManager.beginTransaction().apply {
+            hide(mapFragment)
+            hide(weatherFragment)
             favoritesFragment.let {
                 if (!it.isAdded) {
                     add(R.id.fragment_container, it)
                 }
-                show(it) // Show the MapFragment
+                show(it)
             }
-            hide(mapFragment)
-            hide(weatherFragment)
             commit()
         }
     }

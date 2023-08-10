@@ -16,6 +16,7 @@ class LocationAdapter(
 
     interface Listener {
         fun onClick(position: Int /*, locationName: TextView*/)
+        fun onLongClick(locationName: String): Boolean
     }
 
     fun setListener(listener: Listener?) {
@@ -43,6 +44,10 @@ class LocationAdapter(
 
         holder.itemView.setOnClickListener {
             listener?.onClick(position /*, locationName*/)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            listener?.onLongClick(locations[position].locationName) ?: false
         }
     }
 }
