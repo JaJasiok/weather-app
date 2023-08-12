@@ -9,6 +9,9 @@ import MinutelyWeather
 import Temperature
 import WeatherApiResponse
 import WeatherCondition
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
@@ -18,11 +21,14 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
 
-class WeatherApiClient(private val apiKey: String) {
+class WeatherApiClient(private val context: Context, private val apiKey: String) {
+
     suspend fun getWeatherData(latitude: Double, longitude: Double): WeatherApiResponse? =
-        withContext(
-            Dispatchers.IO
-        ) {
+        withContext(Dispatchers.IO) {
+            if (!isInternetAvailable()) {
+                return@withContext null
+            }
+
             val url =
                 "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely&appid=$apiKey"
 
@@ -34,6 +40,19 @@ class WeatherApiClient(private val apiKey: String) {
                 parseWeatherApiResponse(it)
             }
         }
+
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+        connectivityManager?.let {
+            val network = it.activeNetwork
+            val capabilities = it.getNetworkCapabilities(network)
+            return capabilities != null &&
+                    (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
+        }
+        return false
+    }
 
     private suspend fun getJsonData(url: String): JSONObject? {
         return try {

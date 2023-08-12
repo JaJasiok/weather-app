@@ -5,13 +5,11 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
 import com.example.weatherapp.LocationModelFactory
 import com.example.weatherapp.LocationViewModel
 import com.example.weatherapp.MyFragmentAdapter
@@ -31,20 +29,10 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var geocoder: Geocoder
-    private lateinit var viewPager: ViewPager
-    private var adapter: MyFragmentAdapter? = null
     private var weatherData: WeatherApiResponse? = null
     private val locationViewModel: LocationViewModel by activityViewModels {
         LocationModelFactory((requireActivity().application as WeatherApplication).repository)
     }
-    private val weatherApiClient = WeatherApiClient("f7e942927369dbd7b31e7a69df30b3fd")
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        enterTransition = MaterialFadeThrough()
-//        exitTransition = MaterialFadeThrough()
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,108 +40,137 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentWeatherBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val weatherView = binding.root
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupViews()
+        fetchWeatherData()
+    }
 
-        viewPager = binding.pager
+    private fun setupViews() {
+        val viewPager = binding.pager
+        val adapter = MyFragmentAdapter(childFragmentManager)
+        viewPager.adapter = adapter
 
-        val toolbar = binding.toolbar
-
-        val errorText = binding.errorText
+        binding.tabs.setupWithViewPager(viewPager)
+        binding.toolbar.inflateMenu(R.menu.weather_menu)
+        binding.errorText.visibility = View.GONE
 
         if (latLng == null) {
-            toolbar.title = "Unknown"
-            binding.pager.visibility = GONE
-            errorText.text = "Unable to fetch current location. Please check permissions!"
-
-            return weatherView
+            handleUnknownLocation()
+        } else {
+            geocoder = Geocoder(requireActivity(), Locale.getDefault())
+            val latitude = latLng.latitude
+            val longitude = latLng.longitude
+            val locationName = getCityName(geocoder, latitude, longitude)
+            setupToolbar(locationName)
+            setupMenu(locationName, latitude, longitude)
         }
+    }
 
-        geocoder = Geocoder(requireActivity(), Locale.getDefault())
+    private fun handleUnknownLocation() {
+        binding.toolbar.title = "Unknown"
+        binding.errorText.text = resources.getString(R.string.location_error)
+        binding.errorText.visibility = View.VISIBLE
+        binding.pager.visibility = View.GONE
+    }
 
-        val latitude = latLng.latitude
-        val longitude = latLng.longitude
+    private fun setupToolbar(locationName: String) {
+        binding.toolbar.title = locationName
+    }
 
-        val locationName = getCityName(geocoder, latitude, longitude)
-
-        toolbar.title = locationName
-        toolbar.inflateMenu(R.menu.weather_menu)
-
+    private fun setupMenu(locationName: String, latitude: Double, longitude: Double) {
         locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
-            if ((locations.find { it.locationName == locationName }) != null) {
-                toolbar.menu.findItem(R.id.action_add_favorite).isVisible = false
-                toolbar.menu.findItem(R.id.action_delete_favorite).isVisible = true
-            } else {
-                toolbar.menu.findItem(R.id.action_add_favorite).isVisible = true
-                toolbar.menu.findItem(R.id.action_delete_favorite).isVisible = false
-            }
-        }
+            val menu = binding.toolbar.menu
+            val addFavoriteItem = menu.findItem(R.id.action_add_favorite)
+            val deleteFavoriteItem = menu.findItem(R.id.action_delete_favorite)
+            val locationExists = locations.any { it.locationName == locationName }
 
-        toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_add_favorite -> {
-                    locationViewModel.addLocation(
-                        Location(
-                            locationName,
-                            latitude,
-                            longitude,
-                            System.currentTimeMillis()
+            addFavoriteItem.isVisible = !locationExists
+            deleteFavoriteItem.isVisible = locationExists
+
+            binding.toolbar.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_add_favorite -> {
+                        locationViewModel.addLocation(
+                            Location(
+                                locationName,
+                                latitude,
+                                longitude,
+                                System.currentTimeMillis()
+                            )
                         )
-                    )
-                    true
-                }
-
-                R.id.action_delete_favorite -> {
-                    locationViewModel.deleteLocationByName(locationName)
-                    true
-                }
-
-                R.id.action_refresh -> {
-                    lifecycleScope.launch {
-                        val newWeatherData = weatherApiClient.getWeatherData(latitude, longitude)
-                        if (newWeatherData == null) {
-                            Toast.makeText(
-                                requireContext(),
-                                "Unable to refresh data. Try again!",
-                                Toast.LENGTH_LONG
-                            ).show()
-//                        }else if (weatherData == newWeatherData) {
-//                            weatherData!!.current!!.dt = System.currentTimeMillis()
-//                            adapter.setWeatherData(weatherData!!)
-                        } else {
-                            weatherData = newWeatherData
-                            if (adapter == null){
-                                adapter = MyFragmentAdapter(childFragmentManager, weatherData!!)
-                                viewPager.adapter = adapter
-                            } else{
-                                adapter!!.setWeatherData(weatherData!!)
-                            }
-                            errorText.text = ""
-                        }
+                        true
                     }
-                    true
+
+                    R.id.action_delete_favorite -> {
+                        locationViewModel.deleteLocationByName(locationName)
+                        true
+                    }
+
+                    R.id.action_refresh -> {
+                        refreshWeatherData(latitude, longitude)
+                        true
+                    }
+
+                    else -> false
                 }
-
-                else -> false
             }
         }
+    }
 
+    private fun fetchWeatherData() {
+        if (latLng != null) {
+            val latitude = latLng.latitude
+            val longitude = latLng.longitude
+
+            lifecycleScope.launch {
+                val weatherApiClient = WeatherApiClient(requireContext(), "f7e942927369dbd7b31e7a69df30b3fd")
+                weatherData = weatherApiClient.getWeatherData(latitude, longitude)
+
+                if (weatherData == null) {
+                    handleApiError()
+                } else {
+                    binding.errorText.visibility = View.GONE
+                    binding.pager.visibility = View.VISIBLE
+                    val adapter = binding.pager.adapter as? MyFragmentAdapter
+                    adapter?.setWeatherData(weatherData!!)
+                }
+            }
+        }
+    }
+
+    private fun refreshWeatherData(latitude: Double, longitude: Double) {
         lifecycleScope.launch {
-            weatherData = weatherApiClient.getWeatherData(latitude, longitude)
+            val weatherApiClient = WeatherApiClient(requireContext(), "f7e942927369dbd7b31e7a69df30b3fd")
+            val newWeatherData = weatherApiClient.getWeatherData(latitude, longitude)
 
-            if (weatherData == null) {
-                val errorText = binding.errorText
-                errorText.text = "Unable to fetch data from the API. Try again!"
-                return@launch
+            if (newWeatherData == null) {
+                Toast.makeText(
+                    requireContext(),
+                    "Unable to refresh data. Try again!",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                weatherData = newWeatherData
+                val adapter = binding.pager.adapter as? MyFragmentAdapter
+                adapter?.setWeatherData(weatherData!!)
+                binding.errorText.visibility = View.GONE
+                binding.pager.visibility = View.VISIBLE
             }
-
-            adapter = MyFragmentAdapter(childFragmentManager, weatherData!!)
-            viewPager.adapter = adapter
-
-            val tabLayout = binding.tabs
-            tabLayout.setupWithViewPager(viewPager)
         }
+    }
 
-        return weatherView
+    private fun handleApiError() {
+        binding.errorText.text = resources.getString(R.string.api_error)
+        binding.errorText.visibility = View.VISIBLE
+        binding.pager.visibility = View.GONE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

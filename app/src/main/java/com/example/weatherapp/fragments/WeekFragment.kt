@@ -11,10 +11,13 @@ import com.example.weatherapp.DailyWeatherAdapter
 import com.example.weatherapp.MyFragmentAdapter
 import com.example.weatherapp.databinding.FragmentWeekBinding
 
-class WeekFragment(private var weatherData: WeatherApiResponse) : Fragment(), MyFragmentAdapter.WeatherDataListener  {
+class WeekFragment() : Fragment(), MyFragmentAdapter.WeatherDataListener {
 
     private var _binding: FragmentWeekBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var weatherData: WeatherApiResponse
+    private var dataReceived = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,9 +26,15 @@ class WeekFragment(private var weatherData: WeatherApiResponse) : Fragment(), My
     ): View {
         _binding = FragmentWeekBinding.inflate(inflater, container, false)
 
-        updateFragment()
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (dataReceived) {
+            updateFragment()
+        }
     }
 
     private fun updateFragment() {
@@ -41,9 +50,14 @@ class WeekFragment(private var weatherData: WeatherApiResponse) : Fragment(), My
             dailyRecyclerView.adapter = dailyAdapter
         }
     }
+
     override fun onWeatherDataUpdated(newWeatherData: WeatherApiResponse) {
         this.weatherData = newWeatherData
-        updateFragment()
+        dataReceived = true
+
+        if (isAdded && view != null) {
+            updateFragment()
+        }
     }
 
     override fun onDestroyView() {

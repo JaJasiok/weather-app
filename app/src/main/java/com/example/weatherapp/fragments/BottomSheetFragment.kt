@@ -1,6 +1,7 @@
 package com.example.weatherapp.fragments
 
 import WeatherApiResponse
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,10 +19,11 @@ import com.example.weatherapp.WeatherApiClient
 import com.example.weatherapp.WeatherApplication
 import com.example.weatherapp.databinding.SheetBottomBinding
 import com.example.weatherapp.db.Location
+import com.example.weatherapp.getCityName
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class BottomSheet(
-    private val locationName: String,
     private val latitude: Double,
     private val longitude: Double,
     private var weatherData: WeatherApiResponse?,
@@ -30,11 +32,11 @@ class BottomSheet(
     private var _binding: SheetBottomBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var geocoder: Geocoder
     private val locationViewModel: LocationViewModel by activityViewModels {
         LocationModelFactory((requireActivity().application as WeatherApplication).repository)
     }
     private lateinit var viewPager: ViewPager
-    private val weatherApiClient = WeatherApiClient("f7e942927369dbd7b31e7a69df30b3fd")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,24 +46,26 @@ class BottomSheet(
         _binding = SheetBottomBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        val weatherApiClient = WeatherApiClient(requireContext(), "f7e942927369dbd7b31e7a69df30b3fd")
+
         viewPager = binding.pager
 
-        val errorText = binding.errorText
-        if (weatherData == null) {
-            errorText.text = "Unable to fetch data from the API. Try again!"
-            return view
-        }
-
-        val adapter = MyFragmentAdapter(childFragmentManager, weatherData!!)
+        val adapter = MyFragmentAdapter(childFragmentManager)
         viewPager.adapter = adapter
 
         val tabLayout = binding.tabs
         tabLayout.setupWithViewPager(viewPager)
 
+        geocoder = Geocoder(requireActivity(), Locale.getDefault())
+
+        val locationName = getCityName(geocoder, latitude, longitude)
+
         val toolbar = binding.toolbar
         toolbar.title = locationName
 
         toolbar.inflateMenu(R.menu.weather_menu)
+
+        val errorText = binding.errorText
 
         locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
             if ((locations.find { it.locationName == locationName }) != null) {
@@ -71,6 +75,14 @@ class BottomSheet(
                 toolbar.menu.findItem(R.id.action_add_favorite).isVisible = true
                 toolbar.menu.findItem(R.id.action_delete_favorite).isVisible = false
             }
+        }
+
+        if (weatherData == null) {
+            errorText.visibility = View.VISIBLE
+//            viewPager.visibility = View.GONE
+        }
+        else{
+            adapter.setWeatherData(weatherData!!)
         }
 
         toolbar.setOnMenuItemClickListener { item ->
@@ -107,7 +119,8 @@ class BottomSheet(
                         } else {
                             weatherData = newWeatherData
                             adapter.setWeatherData(weatherData!!)
-                            errorText.text = ""
+                            errorText.visibility = View.GONE
+                            viewPager.visibility = View.VISIBLE
                         }
                     }
                     true

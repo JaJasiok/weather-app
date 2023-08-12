@@ -16,21 +16,16 @@ import com.example.weatherapp.LocationViewModel
 import com.example.weatherapp.WeatherActivity
 import com.example.weatherapp.WeatherApplication
 import com.example.weatherapp.databinding.FragmentFavoritesBinding
+import com.example.weatherapp.db.Location
 
 class FavoritesFragment : Fragment() {
 
     private val locationViewModel: LocationViewModel by activityViewModels {
         LocationModelFactory((requireActivity().application as WeatherApplication).repository)
     }
+
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        enterTransition = MaterialFadeThrough()
-//        exitTransition = MaterialFadeThrough()
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,43 +35,55 @@ class FavoritesFragment : Fragment() {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val toolbar = binding.toolbar
-        toolbar.title = "Favorites"
+        setupToolbar()
 
         setRecyclerView()
 
         return view
     }
 
+    private fun setupToolbar() {
+        val toolbar = binding.toolbar
+        toolbar.title = "Favorites"
+    }
+
     private fun setRecyclerView() {
-        locationViewModel.locations.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                binding.locationRecyclerView.visibility = View.GONE
-                binding.errorText.visibility = View.VISIBLE
+        locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
+            if (locations.isEmpty()) {
+                showEmptyFavoritesView()
             } else {
-                binding.locationRecyclerView.visibility = View.VISIBLE
-                binding.errorText.visibility = View.GONE
+                showFavoritesRecyclerView(locations)
+            }
+        }
+    }
 
-                binding.locationRecyclerView.apply {
-                    layoutManager =
-                        LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                    adapter = LocationAdapter(it).apply {
-                        setListener(object : LocationAdapter.Listener {
-                            override fun onClick(position: Int /*, locationNameView: TextView*/) {
-                                val intent = Intent(requireContext(), WeatherActivity::class.java)
-                                intent.putExtra("latitude", it[position].locationLat)
-                                intent.putExtra("longitude", it[position].locationLng)
-//                            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), locationNameView, "location_name")
-                                startActivity(intent /*, options.toBundle()*/)
-                            }
+    private fun showEmptyFavoritesView() {
+        binding.locationRecyclerView.visibility = View.GONE
+        binding.errorText.visibility = View.VISIBLE
+    }
 
-                            override fun onLongClick(locationName: String): Boolean {
-                                showDeleteConfirmationDialog(locationName)
-                                return true
-                            }
-                        })
+    private fun showFavoritesRecyclerView(locations: List<Location>) {
+        binding.locationRecyclerView.visibility = View.VISIBLE
+        binding.errorText.visibility = View.GONE
+
+        binding.locationRecyclerView.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            adapter = LocationAdapter(locations).apply {
+                setListener(object : LocationAdapter.Listener {
+                    override fun onClick(position: Int) {
+                        val intent = Intent(requireContext(), WeatherActivity::class.java)
+                        val location = locations[position]
+                        intent.putExtra("latitude", location.locationLat)
+                        intent.putExtra("longitude", location.locationLng)
+                        startActivity(intent)
                     }
-                }
+
+                    override fun onLongClick(locationName: String): Boolean {
+                        showDeleteConfirmationDialog(locationName)
+                        return true
+                    }
+                })
             }
         }
     }

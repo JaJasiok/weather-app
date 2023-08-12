@@ -20,10 +20,13 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-class TomorrowFragment(private var weatherData: WeatherApiResponse) : Fragment(), MyFragmentAdapter.WeatherDataListener {
+class TomorrowFragment() : Fragment(), MyFragmentAdapter.WeatherDataListener {
 
     private var _binding: FragmentTomorrowBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var weatherData: WeatherApiResponse
+    private var dataReceived = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,9 +36,15 @@ class TomorrowFragment(private var weatherData: WeatherApiResponse) : Fragment()
 
         _binding = FragmentTomorrowBinding.inflate(inflater, container, false)
 
-        updateFragment()
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (dataReceived) {
+            updateFragment()
+        }
     }
 
     private fun updateFragment() {
@@ -244,10 +253,13 @@ class TomorrowFragment(private var weatherData: WeatherApiResponse) : Fragment()
         }
     }
 
-        override fun onWeatherDataUpdated(newWeatherData: WeatherApiResponse) {
+    override fun onWeatherDataUpdated(newWeatherData: WeatherApiResponse) {
         this.weatherData = newWeatherData
+        dataReceived = true
 
-        updateFragment()
+        if (isAdded && view != null) {
+            updateFragment()
+        }
     }
 
     private fun calculateHoursUntilNextSixAM(timestamp: Long, offsetSeconds: Int): Int {

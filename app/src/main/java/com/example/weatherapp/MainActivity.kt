@@ -35,11 +35,12 @@ internal class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
-        getCurrentLocation()
+
+        mapFragment = MapFragment(fusedLocationClient)
 
         favoritesFragment = FavoritesFragment()
 
-        mapFragment = MapFragment(fusedLocationClient)
+        getCurrentLocation()
 
         if (savedInstanceState == null) {
             loadFragment(mapFragment)
@@ -128,8 +129,8 @@ internal class MainActivity : AppCompatActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             weatherFragment = WeatherFragment(null)
-//            showWeatherFragment()
-//            showMapFragment()
+            showWeatherFragment()
+            showMapFragment()
         }
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->

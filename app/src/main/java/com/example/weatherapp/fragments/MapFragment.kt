@@ -3,6 +3,7 @@ package com.example.weatherapp.fragments
 import WeatherApiResponse
 import android.Manifest
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -10,6 +11,10 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.location.Geocoder
 import android.location.Location
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,13 +22,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.weatherapp.LocationModelFactory
-import com.example.weatherapp.LocationViewModel
 import com.example.weatherapp.R
 import com.example.weatherapp.WeatherApiClient
-import com.example.weatherapp.WeatherApplication
 import com.example.weatherapp.databinding.FragmentMapBinding
 import com.example.weatherapp.getCityName
 import com.google.android.gms.common.api.Status
@@ -47,40 +48,49 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 class MapFragment(
-    private val fusedLocationClient: FusedLocationProviderClient,
+    private val fusedLocationClient: FusedLocationProviderClient?,
 ) : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
 
-    private val locationViewModel: LocationViewModel by activityViewModels {
-        LocationModelFactory((requireActivity().application as WeatherApplication).repository)
-    }
     private lateinit var googleMap: GoogleMap
     private lateinit var geocoder: Geocoder
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
+    private lateinit var weatherApiClient: WeatherApiClient
     private var weatherData: WeatherApiResponse? = null
-
-    val weatherApiClient = WeatherApiClient("f7e942927369dbd7b31e7a69df30b3fd")
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        enterTransition = MaterialFadeThrough()
-//        exitTransition = MaterialFadeThrough()
-//    }
+    private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         val mapView = binding.root
 
+        weatherApiClient = WeatherApiClient(requireContext(), "f7e942927369dbd7b31e7a69df30b3fd")
+
+        initMap()
+        initAutocompleteFragment()
+
+        connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        initNetworkCallback()
+        val isConnected = isNetworkConnected()
+        Log.d("MapFragment", "Network connected: $isConnected")
+        if(!isConnected){
+            binding.mapFragment.visibility = View.GONE
+            binding.autocompleteFragment.visibility = View.GONE
+            binding.errorText.visibility = View.VISIBLE
+        }
+
+        return mapView
+    }
+
+    private fun initMap() {
         val mapFragment = childFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+            .findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync { map ->
             googleMap = map
 
@@ -156,7 +166,6 @@ class MapFragment(
 
             googleMap.setOnMarkerClickListener { marker ->
                 val bottomSheet = BottomSheet(
-                    marker.title!!,
                     (marker.tag as Array<Double>)[0],
                     (marker.tag as Array<Double>)[1],
                     weatherData
@@ -164,30 +173,10 @@ class MapFragment(
                 bottomSheet.show(childFragmentManager, "TAG1")
                 true
             }
-
         }
 
-        Places.initialize(requireActivity(), "AIzaSyBqQY0NwTHxhCh_JP9R1O2dPSO61sR-l0A")
-//        val placesClient = Places.createClient(requireActivity())
-
-        autocompleteFragment =
-            childFragmentManager.findFragmentById(R.id.autocomplete_fragment)
-                    as AutocompleteSupportFragment
-
-        autocompleteFragment.setPlaceFields(
-            listOf(
-                Place.Field.ID,
-                Place.Field.NAME,
-                Place.Field.LAT_LNG
-            )
-        )
-
-        val rootView = autocompleteFragment.view
-        rootView?.setBackgroundResource(R.drawable.rounded_background)
-
-
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
+        fusedLocationClient?.lastLocation
+            ?.addOnSuccessListener { location: Location? ->
                 autocompleteFragment.setLocationBias(
                     RectangularBounds.newInstance(
                         LatLng(location?.longitude ?: 0.0, location?.longitude ?: 0.0),
@@ -203,6 +192,22 @@ class MapFragment(
                 )
 
             }
+    }
+
+    private fun initAutocompleteFragment() {
+        Places.initialize(requireActivity(), "AIzaSyBqQY0NwTHxhCh_JP9R1O2dPSO61sR-l0A", Locale.US)
+
+        autocompleteFragment =
+            childFragmentManager.findFragmentById(R.id.autocomplete_fragment)
+                    as AutocompleteSupportFragment
+
+        autocompleteFragment.setPlaceFields(
+            listOf(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.LAT_LNG
+            )
+        )
 
         autocompleteFragment.setTypesFilter(listOf(PlaceTypes.CITIES))
 
@@ -244,8 +249,8 @@ class MapFragment(
                 Log.i(ContentValues.TAG, "An error occurred: $status")
             }
         })
-        return mapView
     }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
@@ -266,8 +271,45 @@ class MapFragment(
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
+    private fun initNetworkCallback() {
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                Log.d("NetworkCallback", "Network Available")
+                requireActivity().runOnUiThread {
+                    binding.mapFragment.visibility = View.VISIBLE
+                    binding.autocompleteFragment.visibility = View.VISIBLE
+                    binding.errorText.visibility = View.GONE
+                }
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                Log.d("NetworkCallback", "Network Lost")
+                requireActivity().runOnUiThread {
+                    binding.mapFragment.visibility = View.GONE
+                    binding.autocompleteFragment.visibility = View.GONE
+                    binding.errorText.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        val networkRequest = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+    }
+
+    private fun isNetworkConnected(): Boolean {
+        val activeNetwork = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
         _binding = null
     }
 }

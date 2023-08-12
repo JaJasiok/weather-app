@@ -4,13 +4,12 @@ import WeatherApiResponse
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
-import android.view.Menu
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
 import com.example.weatherapp.databinding.ActivityWeatherBinding
 import com.example.weatherapp.db.Location
 import kotlinx.coroutines.launch
@@ -22,13 +21,11 @@ class WeatherActivity : AppCompatActivity() {
 
     private lateinit var intent: Intent
     private lateinit var geocoder: Geocoder
-    private lateinit var viewPager: ViewPager
-    private var adapter: MyFragmentAdapter? = null
     private var weatherData: WeatherApiResponse? = null
     private val locationViewModel: LocationViewModel by viewModels {
         LocationModelFactory((this@WeatherActivity.application as WeatherApplication).repository)
     }
-    private val weatherApiClient = WeatherApiClient("f7e942927369dbd7b31e7a69df30b3fd")
+    private val weatherApiClient = WeatherApiClient(this@WeatherActivity, "f7e942927369dbd7b31e7a69df30b3fd")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +33,21 @@ class WeatherActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         binding = ActivityWeatherBinding.inflate(layoutInflater)
+
         val view = binding.root
         setContentView(view)
 
-        viewPager = binding.pager
+        val viewPager = binding.pager
+
+        val adapter = MyFragmentAdapter(supportFragmentManager)
+        viewPager.adapter = adapter
+
+        val tabLayout = binding.tabs
+        tabLayout.setupWithViewPager(viewPager)
+
+        val toolbar = binding.toolbar
+
+        val errorText = binding.errorText
 
         geocoder = Geocoder(this@WeatherActivity, Locale.getDefault())
 
@@ -48,12 +56,20 @@ class WeatherActivity : AppCompatActivity() {
         val latitude = intent.getDoubleExtra("latitude", 0.0)
         val longitude = intent.getDoubleExtra("longitude", 0.0)
 
+        lifecycleScope.launch {
+            weatherData = weatherApiClient.getWeatherData(latitude, longitude)
+
+            if (weatherData == null) {
+                errorText.visibility = View.VISIBLE
+                viewPager.visibility = View.GONE
+                return@launch
+            }
+
+            adapter.setWeatherData(weatherData!!)
+        }
+
         val locationName = getCityName(geocoder, latitude, longitude)
 
-        val errorText = binding.errorText
-
-
-        val toolbar = binding.toolbar
         toolbar.title = locationName
         toolbar.setNavigationIcon(R.drawable.back_arrow)
 
@@ -106,13 +122,9 @@ class WeatherActivity : AppCompatActivity() {
 //                            adapter.setWeatherData(weatherData!!)
                         } else {
                             weatherData = newWeatherData
-                            if (adapter == null){
-                                adapter = MyFragmentAdapter(supportFragmentManager, weatherData!!)
-                                viewPager.adapter = adapter
-                            } else{
-                                adapter!!.setWeatherData(weatherData!!)
-                            }
-                            errorText.text = ""
+                            adapter.setWeatherData(weatherData!!)
+                            errorText.visibility = View.GONE
+                            viewPager.visibility = View.VISIBLE
                         }
                     }
                     true
@@ -121,25 +133,5 @@ class WeatherActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
-
-        lifecycleScope.launch {
-            weatherData = weatherApiClient.getWeatherData(latitude, longitude)
-
-            if (weatherData == null) {
-                errorText.text = "Unable to fetch data from the API. Try again!"
-                return@launch
-            }
-
-            adapter = MyFragmentAdapter(supportFragmentManager, weatherData!!)
-            viewPager.adapter = adapter
-
-            val tabLayout = binding.tabs
-            tabLayout.setupWithViewPager(viewPager)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return super.onCreateOptionsMenu(menu)
     }
 }

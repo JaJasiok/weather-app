@@ -244,8 +244,7 @@ fun getCityName(geocoder: Geocoder, latitude: Double, longitude: Double): String
         if (addresses != null) {
             if (addresses.isNotEmpty()) {
                 val address = addresses[0]
-                val cityName = address.locality ?: address.subAdminArea
-                return cityName
+                return address.locality ?: address.subAdminArea
             }
         }
     } catch (e: Exception) {

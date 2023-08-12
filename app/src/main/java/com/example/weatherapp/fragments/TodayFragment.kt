@@ -17,22 +17,31 @@ import com.example.weatherapp.getDrawableByName
 import com.example.weatherapp.getIconNameHour
 import java.util.Locale
 
-class TodayFragment(private var weatherData: WeatherApiResponse) : Fragment(), MyFragmentAdapter.WeatherDataListener {
+class TodayFragment() : Fragment(), MyFragmentAdapter.WeatherDataListener {
 
     private var _binding: FragmentTodayBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var weatherData: WeatherApiResponse
+    private var dataReceived = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentTodayBinding.inflate(inflater, container, false)
 
-        updateFragment()
-
         return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (dataReceived) {
+            updateFragment()
+        }
     }
 
     private fun updateFragment(){
@@ -263,8 +272,11 @@ class TodayFragment(private var weatherData: WeatherApiResponse) : Fragment(), M
 
     override fun onWeatherDataUpdated(newWeatherData: WeatherApiResponse) {
         this.weatherData = newWeatherData
+        dataReceived = true
 
-        updateFragment()
+        if (isAdded && view != null) {
+            updateFragment()
+        }
     }
 
     override fun onDestroyView() {

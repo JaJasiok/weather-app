@@ -10,15 +10,17 @@ import com.example.weatherapp.fragments.WeekFragment
 
 class MyFragmentAdapter(
     fm: FragmentManager,
-    private var weatherData: WeatherApiResponse
 ) : FragmentPagerAdapter(fm) {
 
     private val fragments = arrayListOf<Fragment>()
 
+    private lateinit var weatherData: WeatherApiResponse
+
+
     init {
-        fragments.add(TodayFragment(weatherData))
-        fragments.add(TomorrowFragment(weatherData))
-        fragments.add(WeekFragment(weatherData))
+        fragments.add(TodayFragment())
+        fragments.add(TomorrowFragment())
+        fragments.add(WeekFragment())
     }
 
     override fun getCount(): Int {
