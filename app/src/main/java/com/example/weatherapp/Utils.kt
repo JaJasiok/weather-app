@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.math.abs
 
 
 fun getIconNameHour(
@@ -250,5 +251,39 @@ fun getCityName(geocoder: Geocoder, latitude: Double, longitude: Double): String
     } catch (e: Exception) {
         Log.e("Geocoding", "Error: ${e.message}")
     }
+    return convertToNSEW(latitude, longitude)
+}
+
+fun getCountryName(geocoder: Geocoder, latitude: Double, longitude: Double): String {
+    try {
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        if (addresses != null) {
+            if (addresses.isNotEmpty()) {
+                val address = addresses[0]
+                return address.countryName
+            }
+        }
+    } catch (e: Exception) {
+        Log.e("Geocoding", "Error: ${e.message}")
+    }
     return ""
+}
+
+fun convertToNSEW(latitude: Double, longitude: Double): String {
+    val latDegrees = latitude.toInt()
+    val latMinutesDecimal = (latitude - latDegrees) * 60
+    val latMinutes = latMinutesDecimal.toInt()
+    val latCardinal = if (latitude >= 0) "N" else "S"
+
+    val longDegrees = longitude.toInt()
+    val longMinutesDecimal = (longitude - longDegrees) * 60
+    val longMinutes = longMinutesDecimal.toInt()
+    val longCardinal = if (longitude >= 0) "E" else "W"
+
+    val absLatDegrees = abs(latDegrees)
+    val absLatMinutes = abs(latMinutes)
+    val absLongDegrees = abs(longDegrees)
+    val absLongMinutes = abs(longMinutes)
+
+    return "$absLatDegrees°$absLatMinutes'$latCardinal $absLongDegrees°$absLongMinutes'$longCardinal"
 }

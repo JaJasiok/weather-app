@@ -13,7 +13,9 @@ import com.example.weatherapp.fragments.MapFragment
 import com.example.weatherapp.fragments.WeatherFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.RectangularBounds
 
 internal class MainActivity : AppCompatActivity() {
 
@@ -37,6 +39,8 @@ internal class MainActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
 
         mapFragment = MapFragment(fusedLocationClient)
+
+        weatherFragment = WeatherFragment(null)
 
         favoritesFragment = FavoritesFragment()
 
@@ -72,8 +76,7 @@ internal class MainActivity : AppCompatActivity() {
     }
 
     private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
             .commit()
     }
 
@@ -121,24 +124,59 @@ internal class MainActivity : AppCompatActivity() {
 
     private fun getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                this, Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            weatherFragment = WeatherFragment(null)
-            showWeatherFragment()
-            showMapFragment()
+        ) else {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    currentLatLng = LatLng(location.latitude, location.longitude)
+                    weatherFragment = WeatherFragment(currentLatLng!!)
+                    showWeatherFragment()
+                    showMapFragment()
+                }
+            }
         }
+    }
 
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                currentLatLng = LatLng(location.latitude, location.longitude)
-                weatherFragment = WeatherFragment(currentLatLng!!)
-                showWeatherFragment()
-                showMapFragment()
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) else {
+            if (requestCode == 1000) {
+
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        currentLatLng = LatLng(location.latitude, location.longitude)
+                        weatherFragment = WeatherFragment(currentLatLng!!)
+                        showWeatherFragment()
+                        showMapFragment()
+
+                        mapFragment.googleMap.isMyLocationEnabled = true
+
+                        mapFragment.autocompleteFragment.setLocationBias(
+                            RectangularBounds.newInstance(
+                                LatLng(location.longitude, location.longitude),
+                                LatLng(location.latitude, location.latitude)
+                            )
+                        )
+                        mapFragment.googleMap.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    (location.latitude), location.longitude
+                                ), 10f
+                            )
+                        )
+                    }
+                }
             }
         }
     }

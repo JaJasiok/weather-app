@@ -20,6 +20,7 @@ import com.example.weatherapp.WeatherApplication
 import com.example.weatherapp.databinding.SheetBottomBinding
 import com.example.weatherapp.db.Location
 import com.example.weatherapp.getCityName
+import com.example.weatherapp.getCountryName
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -59,6 +60,7 @@ class BottomSheet(
         geocoder = Geocoder(requireActivity(), Locale.getDefault())
 
         val locationName = getCityName(geocoder, latitude, longitude)
+        val locationCountry = getCountryName(geocoder, latitude, longitude)
 
         val toolbar = binding.toolbar
         toolbar.title = locationName
@@ -68,7 +70,7 @@ class BottomSheet(
         val errorText = binding.errorText
 
         locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
-            if ((locations.find { it.locationName == locationName }) != null) {
+            if ((locations.find { it.locationName == locationName && it.locationCountry == locationCountry}) != null) {
                 toolbar.menu.findItem(R.id.action_add_favorite).isVisible = false
                 toolbar.menu.findItem(R.id.action_delete_favorite).isVisible = true
             } else {
@@ -91,6 +93,7 @@ class BottomSheet(
                     locationViewModel.addLocation(
                         Location(
                             locationName,
+                            locationCountry,
                             latitude,
                             longitude,
                             System.currentTimeMillis()
@@ -100,7 +103,7 @@ class BottomSheet(
                 }
 
                 R.id.action_delete_favorite -> {
-                    locationViewModel.deleteLocationByName(locationName)
+                    locationViewModel.deleteLocationByData(locationName, locationCountry)
                     true
                 }
 

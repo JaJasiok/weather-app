@@ -69,6 +69,7 @@ class WeatherActivity : AppCompatActivity() {
         }
 
         val locationName = getCityName(geocoder, latitude, longitude)
+        val locationCountry = getCountryName(geocoder, latitude, longitude)
 
         toolbar.title = locationName
         toolbar.setNavigationIcon(R.drawable.back_arrow)
@@ -80,7 +81,7 @@ class WeatherActivity : AppCompatActivity() {
         toolbar.inflateMenu(R.menu.weather_menu)
 
         locationViewModel.locations.observe(this@WeatherActivity) { locations ->
-            if ((locations.find { it.locationName == locationName }) != null) {
+            if ((locations.find { it.locationName == locationName && it.locationCountry == locationCountry}) != null) {
                 toolbar.menu.findItem(R.id.action_add_favorite).isVisible = false
                 toolbar.menu.findItem(R.id.action_delete_favorite).isVisible = true
             } else {
@@ -95,6 +96,7 @@ class WeatherActivity : AppCompatActivity() {
                     locationViewModel.addLocation(
                         Location(
                             locationName,
+                            locationCountry,
                             latitude,
                             longitude,
                             System.currentTimeMillis()
@@ -104,7 +106,7 @@ class WeatherActivity : AppCompatActivity() {
                 }
 
                 R.id.action_delete_favorite -> {
-                    locationViewModel.deleteLocationByName(locationName)
+                    locationViewModel.deleteLocationByData(locationName, locationCountry)
                     true
                 }
 

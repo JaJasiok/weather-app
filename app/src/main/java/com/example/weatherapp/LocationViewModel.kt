@@ -22,8 +22,8 @@ class LocationViewModel(private val repository: LocationRepository) : ViewModel(
         repository.updateLocation(location)
     }
 
-    fun deleteLocationByName(locationName: String) = viewModelScope.launch {
-        repository.deleteLocationByName(locationName)
+    fun deleteLocationByData(locationName: String, locationCountry: String) = viewModelScope.launch {
+        repository.deleteLocationByData(locationName, locationCountry)
     }
 }
 

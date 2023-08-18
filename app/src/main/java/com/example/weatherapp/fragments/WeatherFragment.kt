@@ -19,6 +19,7 @@ import com.example.weatherapp.WeatherApplication
 import com.example.weatherapp.databinding.FragmentWeatherBinding
 import com.example.weatherapp.db.Location
 import com.example.weatherapp.getCityName
+import com.example.weatherapp.getCountryName
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -50,23 +51,24 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
     }
 
     private fun setupViews() {
-        val viewPager = binding.pager
-        val adapter = MyFragmentAdapter(childFragmentManager)
-        viewPager.adapter = adapter
-
-        binding.tabs.setupWithViewPager(viewPager)
-        binding.toolbar.inflateMenu(R.menu.weather_menu)
-        binding.errorText.visibility = View.GONE
-
         if (latLng == null) {
             handleUnknownLocation()
         } else {
+            val viewPager = binding.pager
+            val adapter = MyFragmentAdapter(childFragmentManager)
+            viewPager.adapter = adapter
+
+            binding.tabs.setupWithViewPager(viewPager)
+            binding.toolbar.inflateMenu(R.menu.weather_menu)
+            binding.errorText.visibility = View.GONE
+
             geocoder = Geocoder(requireActivity(), Locale.getDefault())
             val latitude = latLng.latitude
             val longitude = latLng.longitude
             val locationName = getCityName(geocoder, latitude, longitude)
+            val locationCountry = getCountryName(geocoder, latitude, longitude)
             setupToolbar(locationName)
-            setupMenu(locationName, latitude, longitude)
+            setupMenu(locationName, locationCountry, latitude, longitude)
         }
     }
 
@@ -81,12 +83,12 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
         binding.toolbar.title = locationName
     }
 
-    private fun setupMenu(locationName: String, latitude: Double, longitude: Double) {
+    private fun setupMenu(locationName: String, locationCountry: String, latitude: Double, longitude: Double) {
         locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
             val menu = binding.toolbar.menu
             val addFavoriteItem = menu.findItem(R.id.action_add_favorite)
             val deleteFavoriteItem = menu.findItem(R.id.action_delete_favorite)
-            val locationExists = locations.any { it.locationName == locationName }
+            val locationExists = locations.any { it.locationName == locationName && it.locationCountry == locationCountry }
 
             addFavoriteItem.isVisible = !locationExists
             deleteFavoriteItem.isVisible = locationExists
@@ -97,6 +99,7 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
                         locationViewModel.addLocation(
                             Location(
                                 locationName,
+                                locationCountry,
                                 latitude,
                                 longitude,
                                 System.currentTimeMillis()
@@ -106,7 +109,7 @@ class WeatherFragment(private val latLng: LatLng?) : Fragment() {
                     }
 
                     R.id.action_delete_favorite -> {
-                        locationViewModel.deleteLocationByName(locationName)
+                        locationViewModel.deleteLocationByData(locationName, locationCountry)
                         true
                     }
 

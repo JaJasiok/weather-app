@@ -32,6 +32,6 @@ interface LocationDao {
     @Query("DELETE FROM location")
     suspend fun deleteAll()
 
-    @Query("DELETE FROM location WHERE name = :name")
-    suspend fun deleteByName(name: String)
+    @Query("DELETE FROM location WHERE name = :name AND country = :country")
+    suspend fun deleteByData(name: String, country: String)
 }

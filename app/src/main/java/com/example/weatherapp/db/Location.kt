@@ -9,6 +9,8 @@ import androidx.room.PrimaryKey
 data class Location(
     @ColumnInfo(name = "name")
     var locationName: String,
+    @ColumnInfo(name = "country")
+    var locationCountry: String,
     @ColumnInfo(name = "Latitude")
     var locationLat: Double,
     @ColumnInfo(name = "Longitude")

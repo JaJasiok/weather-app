@@ -18,7 +18,7 @@ class LocationRepository(private val locationDao: LocationDao) {
     }
 
     @WorkerThread
-    suspend fun deleteLocationByName(locationName: String) {
-        locationDao.deleteByName(locationName)
+    suspend fun deleteLocationByData(locationName: String, locationCountry: String) {
+        locationDao.deleteByData(locationName, locationCountry)
     }
 }

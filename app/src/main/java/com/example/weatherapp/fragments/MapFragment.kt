@@ -54,9 +54,9 @@ class MapFragment(
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var googleMap: GoogleMap
+    lateinit var googleMap: GoogleMap
     private lateinit var geocoder: Geocoder
-    private lateinit var autocompleteFragment: AutocompleteSupportFragment
+    lateinit var autocompleteFragment: AutocompleteSupportFragment
     private lateinit var weatherApiClient: WeatherApiClient
     private var weatherData: WeatherApiResponse? = null
     private lateinit var connectivityManager: ConnectivityManager
@@ -122,7 +122,7 @@ class MapFragment(
                     arrayOf(
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION
-                    ), 1
+                    ), 1000
                 )
             } else {
                 googleMap.isMyLocationEnabled = true
@@ -193,6 +193,7 @@ class MapFragment(
 
             }
     }
+
 
     private fun initAutocompleteFragment() {
         Places.initialize(requireActivity(), "AIzaSyBqQY0NwTHxhCh_JP9R1O2dPSO61sR-l0A", Locale.US)

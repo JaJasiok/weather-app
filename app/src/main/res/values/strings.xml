@@ -332,6 +332,6 @@
     <string name="refresh">Refresh</string>
     <string name="favorite_locations">No favorite locations found.</string>
     <string name="api_error">Unable to fetch data from the API. Try again!</string>
-    <string name="location_error">Unable to fetch current location. Please check permissions!</string>
+    <string name="location_error">Unable to fetch current location. Please check permissions and restart the application!</string>
     <string name="no_internet_connection">No internet connection!</string>
 </resources>

@@ -79,8 +79,8 @@ class FavoritesFragment : Fragment() {
                         startActivity(intent)
                     }
 
-                    override fun onLongClick(locationName: String): Boolean {
-                        showDeleteConfirmationDialog(locationName)
+                    override fun onLongClick(locationName: String, locationCountry: String): Boolean {
+                        showDeleteConfirmationDialog(locationName, locationCountry)
                         return true
                     }
                 })
@@ -88,14 +88,14 @@ class FavoritesFragment : Fragment() {
         }
     }
 
-    private fun showDeleteConfirmationDialog(locationName: String) {
+    private fun showDeleteConfirmationDialog(locationName: String, locationCountry: String) {
         val builder = AlertDialog.Builder(requireContext())
         val message = "Are you sure you want to delete <b>$locationName</b> from favorites?"
         builder.setTitle("Delete Location")
             .setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT))
             .setPositiveButton("Delete") { _, _ ->
                 // Delete the location from favorites here
-                locationViewModel.deleteLocationByName(locationName)
+                locationViewModel.deleteLocationByData(locationName, locationCountry)
             }
             .setNegativeButton("Cancel", null)
             .create()
