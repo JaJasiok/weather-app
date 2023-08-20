@@ -15,10 +15,8 @@ import com.example.weatherapp.formatHour
 import com.example.weatherapp.getDrawableByName
 import com.example.weatherapp.getIconNameHour
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
 class TomorrowFragment() : Fragment(), MyFragmentAdapter.WeatherDataListener {
 
@@ -99,27 +97,21 @@ class TomorrowFragment() : Fragment(), MyFragmentAdapter.WeatherDataListener {
             val drawable = getDrawableByName(requireContext(), icon)
             currentWeatherImage.setImageDrawable(drawable)
 
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = weatherData.current!!.dt * 1000
-
-            val indexShift =
-                calculateHoursUntilNextSixAM(weatherData.current!!.dt, weatherData.timezoneOffset)
-
             val timezoneOffset = weatherData.timezoneOffset
             val sunriseToday = weatherData.daily!![1].sunrise
             val sunsetToday = weatherData.daily!![1].sunset
             val sunriseTomorrow = weatherData.daily!![2].sunrise
-            val dt = weatherData.hourly?.map { it.dt }?.slice(1 + indexShift..24 + indexShift)
-            val temp = weatherData.hourly?.map { it.temp }?.slice(1 + indexShift..24 + indexShift)
+            val dt = weatherData.hourly?.map { it.dt }?.slice(24..47)
+            val temp = weatherData.hourly?.map { it.temp }?.slice(24..47)
             val clouds =
-                weatherData.hourly?.map { it.clouds }?.slice(1 + indexShift..24 + indexShift)
+                weatherData.hourly?.map { it.clouds }?.slice(24..47)
             val id =
-                weatherData.hourly?.map { it.weather.id }?.slice(1 + indexShift..24 + indexShift)
+                weatherData.hourly?.map { it.weather.id }?.slice(24..47)
             val desc = weatherData.hourly?.map { it.weather.description }
-                ?.slice(1 + indexShift..24 + indexShift)
+                ?.slice(24..47)
             val main =
-                weatherData.hourly?.map { it.weather.main }?.slice(1 + indexShift..24 + indexShift)
-            val pop = weatherData.hourly?.map { it.pop }?.slice(1 + indexShift..24 + indexShift)
+                weatherData.hourly?.map { it.weather.main }?.slice(24..47)
+            val pop = weatherData.hourly?.map { it.pop }?.slice(24..47)
 
             val adapter = HourlyWeatherAdapter(
                 timezoneOffset,
@@ -170,7 +162,7 @@ class TomorrowFragment() : Fragment(), MyFragmentAdapter.WeatherDataListener {
             rainRecyclerView.layoutManager = layoutManager2
 
             val rain =
-                weatherData.hourly?.map { it.rain ?: 0.0 }?.slice(1 + indexShift..24 + indexShift)
+                weatherData.hourly?.map { it.rain ?: 0.0 }?.slice(24..47)
 
             val rainAdapter = RainAdapter(
                 timezoneOffset,
@@ -260,18 +252,6 @@ class TomorrowFragment() : Fragment(), MyFragmentAdapter.WeatherDataListener {
         if (isAdded && view != null) {
             updateFragment()
         }
-    }
-
-    private fun calculateHoursUntilNextSixAM(timestamp: Long, offsetSeconds: Int): Int {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = timestamp * 1000
-
-        val timeZone = TimeZone.getTimeZone("UTC")
-        timeZone.rawOffset = offsetSeconds * 1000
-
-        calendar.timeZone = timeZone
-
-        return 30 - calendar.get(Calendar.HOUR_OF_DAY)
     }
 
     override fun onDestroyView() {

@@ -37,7 +37,7 @@ fun getIconNameHour(
         }
 
         if (id in (230..232)) {
-            name += "rain"
+            name += "_rain"
         }
     } else if (id in (300..321)) {
         name = "drizzle"
@@ -132,7 +132,7 @@ fun getIconNameDay(id: Int, dt: Long, sunrise: Long?, sunset: Long?, clouds: Int
         }
 
         if (id !in (210..221)) {
-            name += "rain"
+            name += "_rain"
         }
     } else if (id in (300..321)) {
         name = "drizzle"
